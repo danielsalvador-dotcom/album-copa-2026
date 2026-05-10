@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🏆 Álbum Copa 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --verde:#00b140;--verde-dark:#007a2e;--amarelo:#FFD700;--azul:#002868;
+  --bg:#0a0f1e;--card:#111827;--card2:#1a2235;--texto:#e8eaf0;--texto2:#8899bb;
+  --colada:#00c853;--repetida:#ff6d00;--falta:#2a3550;--border:#1e2d4a;
+  --brilhante:#c8a200;--brilhante-bg:rgba(255,215,0,0.07);
+  --tab-h:52px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--texto);min-height:100vh;overflow-x:hidden;padding-bottom:var(--tab-h)}
+
+/* HEADER */
+header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-dark) 100%);padding:12px 16px;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.5);border-bottom:2px solid var(--amarelo)}
+.header-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.header-top h1{font-family:'Bebas Neue',cursive;font-size:1.4rem;letter-spacing:2px;color:var(--amarelo);text-shadow:0 0 20px rgba(255,215,0,.4);flex:1}
+.progress-bar-wrap{background:rgba(0,0,0,.4);border-radius:20px;height:7px;overflow:hidden;margin-bottom:6px}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--verde),var(--amarelo));border-radius:20px;transition:width .4s ease}
+.progress-stats{display:flex;gap:8px;font-size:.7rem;font-weight:600;flex-wrap:wrap;align-items:center}
+.stat-coladas{color:var(--colada)}.stat-faltam{color:var(--amarelo)}.stat-repetidas{color:var(--repetida)}
+.stat-pct{color:#fff;font-size:.9rem;font-family:'Bebas Neue',cursive;margin-left:auto}
+
+/* BOTTOM TABS */
+.bottom-tabs{position:fixed;bottom:0;left:0;right:0;height:var(--tab-h);background:var(--card);border-top:1px solid var(--border);display:flex;z-index:200}
+.bottom-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;border:none;background:transparent;color:var(--texto2);font-family:'Barlow',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.3px;transition:color .2s;padding:4px 0}
+.bottom-tab .tab-icon{font-size:1.2rem;line-height:1}
+.bottom-tab.ativo{color:var(--verde)}
+
+/* PÁGINAS */
+.page{display:none}.page.ativo{display:block}
+
+/* CONTROLES */
+.controles{padding:9px 12px;background:var(--card);border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:6px;position:sticky;top:92px;z-index:90}
+.busca{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;color:var(--texto);font-family:'Barlow',sans-serif;font-size:.9rem;width:100%;outline:none;transition:border-color .2s}
+.busca:focus{border-color:var(--verde)}.busca::placeholder{color:var(--texto2)}
+.filtros-row{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.filtros-row::-webkit-scrollbar{display:none}
+.filtro-btn{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:5px 11px;color:var(--texto2);font-family:'Barlow',sans-serif;font-size:.71rem;font-weight:600;white-space:nowrap;cursor:pointer;transition:all .2s;flex-shrink:0}
+.filtro-btn.ativo{background:var(--verde);border-color:var(--verde);color:#fff}
+.filtro-btn.ord.ativo{background:var(--azul);border-color:#4a6fa5;color:#fff}
+
+/* LEGENDA */
+.legenda{display:flex;gap:12px;padding:6px 12px;background:var(--card);border-bottom:1px solid var(--border);font-size:.66rem;font-weight:600;color:var(--texto2);overflow-x:auto;scrollbar-width:none}
+.legenda::-webkit-scrollbar{display:none}
+.leg-item{display:flex;align-items:center;gap:4px;white-space:nowrap}
+.leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.leg-dot.c{background:var(--colada)}.leg-dot.r{background:var(--repetida)}.leg-dot.f{background:var(--falta)}.leg-dot.b{background:linear-gradient(135deg,#ffe066,#c8a200)}
+.instrucao{padding:5px 12px;background:rgba(255,215,0,.04);border-bottom:1px solid var(--border);font-size:.67rem;color:var(--texto2);text-align:center}
+.instrucao strong{color:var(--amarelo)}
+
+/* MAIN */
+#pageAlbum main{padding:8px 8px 80px}
+
+/* GRUPO LABEL */
+.grupo-label{font-family:'Bebas Neue',cursive;font-size:.76rem;letter-spacing:3px;color:var(--amarelo);background:rgba(255,215,0,.07);padding:6px 10px 5px;border-left:3px solid var(--amarelo);margin-bottom:6px;margin-top:2px;border-radius:0 6px 6px 0;display:flex;align-items:center;gap:6px}
+.grupo-label .grupo-flags{font-size:.9rem;letter-spacing:1px}
+
+/* CARDS */
+.selecao-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:7px;overflow:hidden;transition:border-color .3s,box-shadow .3s}
+.selecao-card.completa{border-color:var(--colada);box-shadow:0 0 10px rgba(0,200,83,.18)}
+.selecao-progress{height:3px;background:var(--falta)}
+.selecao-progress-fill{height:100%;background:linear-gradient(90deg,var(--verde),var(--amarelo));transition:width .4s ease}
+.selecao-progress-fill.cheia{background:var(--colada)}
+.selecao-header{display:flex;align-items:center;gap:9px;padding:10px 12px;cursor:pointer;user-select:none}
+.sel-flag{font-size:1.9rem;line-height:1;flex-shrink:0}
+.sel-info{flex:1;min-width:0}
+.sel-nome{font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:1.5px;color:var(--texto);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sel-meta{font-size:.66rem;font-weight:700;color:var(--texto2);letter-spacing:.8px;margin-top:1px}
+.sel-mini-stats{display:flex;gap:3px;align-items:center;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;max-width:95px}
+.mini-badge{font-size:.63rem;font-weight:700;padding:2px 5px;border-radius:7px;white-space:nowrap}
+.mini-badge.c{background:rgba(0,200,83,.15);color:var(--colada)}
+.mini-badge.r{background:rgba(255,109,0,.15);color:var(--repetida)}
+.mini-badge.f{background:var(--falta);color:var(--texto2)}
+.completa-badge{font-size:.63rem;font-weight:700;background:rgba(0,200,83,.15);color:var(--colada);border:1px solid rgba(0,200,83,.3);padding:2px 7px;border-radius:7px;white-space:nowrap}
+.chevron{color:var(--texto2);font-size:.7rem;transition:transform .3s;flex-shrink:0;margin-left:3px}
+.selecao-card.aberto .chevron{transform:rotate(180deg)}
+
+/* AÇÕES */
+.acoes-massa{display:none;padding:6px 10px 0;gap:5px}
+.selecao-card.aberto .acoes-massa{display:flex}
+.acao-btn{font-family:'Barlow',sans-serif;font-size:.67rem;font-weight:700;padding:4px 10px;border-radius:7px;border:none;cursor:pointer;transition:all .15s}
+.acao-btn:active{transform:scale(.95)}
+.acao-btn.todas-coladas{background:rgba(0,200,83,.15);color:var(--colada);border:1px solid rgba(0,200,83,.3)}
+.acao-btn.limpar{background:rgba(136,153,187,.1);color:var(--texto2);border:1px solid var(--border)}
+
+/* GRID FIGURINHAS */
+.figurinhas-grid{display:none;padding:8px;gap:4px;grid-template-columns:repeat(4,1fr)}
+.selecao-card.aberto .figurinhas-grid{display:grid}
+
+/* FWC tem 3 colunas (só 14 figs) */
+.figurinhas-grid.fwc-grid{grid-template-columns:repeat(3,1fr)}
+
+.figurinha{border-radius:8px;border:2px solid transparent;background:var(--falta);padding:6px 3px;text-align:center;cursor:pointer;transition:all .18s;position:relative;user-select:none;-webkit-user-select:none;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.figurinha:active{transform:scale(.92)}
+
+/* Brilhante base */
+.figurinha.brilhante{background:var(--brilhante-bg);border-color:rgba(200,162,0,.3)}
+.figurinha.brilhante .fig-num{color:var(--brilhante)}
+
+/* Sub-categorias FWC */
+.figurinha.fwc-especial{background:rgba(255,215,0,.1);border-color:rgba(200,162,0,.4)}
+.figurinha.fwc-especial .fig-num{color:var(--brilhante)}
+.figurinha.fwc-paises{background:rgba(74,144,217,.08);border-color:rgba(74,144,217,.25)}
+.figurinha.fwc-paises .fig-num{color:#4a90d9}
+.figurinha.fwc-historia{background:rgba(180,100,220,.08);border-color:rgba(180,100,220,.25)}
+.figurinha.fwc-historia .fig-num{color:#b464dc}
+
+.brilhante-icon{position:absolute;top:2px;left:3px;font-size:.52rem;line-height:1}
+.fig-cat{position:absolute;top:2px;right:3px;font-size:.45rem;line-height:1;color:var(--texto2);font-weight:700;letter-spacing:.2px}
+.fig-num{font-family:'Bebas Neue',cursive;font-size:.9rem;letter-spacing:.5px;color:var(--texto2);line-height:1}
+.fig-status{font-size:.55rem;font-weight:700;letter-spacing:.2px;min-height:8px;line-height:1}
+.figurinha.colada{background:rgba(0,200,83,.12);border-color:var(--colada)}
+.figurinha.colada .fig-num{color:var(--colada)}.figurinha.colada .fig-status{color:var(--colada)}
+.figurinha.colada.brilhante{background:rgba(0,200,83,.15);border-color:var(--colada)}
+.figurinha.colada.fwc-especial,.figurinha.colada.fwc-paises,.figurinha.colada.fwc-historia{background:rgba(0,200,83,.12);border-color:var(--colada)}
+.figurinha.colada.fwc-especial .fig-num,.figurinha.colada.fwc-paises .fig-num,.figurinha.colada.fwc-historia .fig-num{color:var(--colada)}
+.figurinha.repetida{background:rgba(255,109,0,.12);border-color:var(--repetida)}
+.figurinha.repetida .fig-num{color:var(--repetida)}.figurinha.repetida .fig-status{color:var(--repetida)}
+.fig-qtd{position:absolute;top:-5px;right:-5px;background:var(--repetida);color:#fff;font-size:.54rem;font-weight:800;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.brilhante-aviso{font-size:.46rem;color:var(--brilhante);font-weight:700;display:none;line-height:1}
+.figurinha.brilhante .brilhante-aviso,.figurinha.fwc-especial .brilhante-aviso{display:block}
+
+/* FABS */
+.fabs{position:fixed;bottom:calc(var(--tab-h)+8px);right:12px;display:flex;flex-direction:column;gap:6px;z-index:190;align-items:flex-end}
+.fab{border-radius:50px;padding:10px 14px;font-family:'Bebas Neue',cursive;font-size:.78rem;letter-spacing:1.5px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;box-shadow:0 3px 12px rgba(0,0,0,.4);border:none}
+.fab:active{transform:scale(.95)}
+.fab.verde{background:linear-gradient(135deg,var(--verde),var(--verde-dark));color:#fff;box-shadow:0 3px 16px rgba(0,177,64,.35)}
+.fab.gold{background:linear-gradient(135deg,#c8a200,#8a6e00);color:#fff;box-shadow:0 3px 16px rgba(200,162,0,.3)}
+
+/* MODAIS */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;display:none;align-items:flex-end}
+.modal-overlay.aberto{display:flex}
+.modal{background:var(--card);border-radius:20px 20px 0 0;width:100%;max-height:88vh;overflow-y:auto;padding:16px 14px 44px;border-top:2px solid var(--amarelo);animation:slideUp .28s ease}
+.modal.gold-top{border-top-color:var(--brilhante)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-header{display:flex;align-items:flex-start;margin-bottom:12px;gap:10px}
+.modal-header-txt{flex:1}
+.modal h2{font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:2px;color:var(--amarelo)}
+.modal h2.gold{color:var(--brilhante)}
+.modal p{color:var(--texto2);font-size:.77rem;margin-top:2px}
+.modal-close{background:var(--card2);border:1px solid var(--border);color:var(--texto2);font-size:1rem;width:28px;height:28px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.modal-tabs{display:flex;gap:6px;margin-bottom:12px;border-bottom:1px solid var(--border);padding-bottom:8px}
+.tab-btn{font-family:'Barlow',sans-serif;font-size:.73rem;font-weight:700;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--card2);color:var(--texto2);cursor:pointer;transition:all .2s}
+.tab-btn.ativo{background:var(--verde);border-color:var(--verde);color:#fff}
+.tab-content{display:none}.tab-content.ativo{display:block}
+.lista-itens{display:flex;flex-direction:column;gap:5px}
+.rep-item{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:8px 10px;display:flex;align-items:center;gap:8px}
+.rep-item.bri{border-color:rgba(200,162,0,.35);background:var(--brilhante-bg)}
+.rep-flag{font-size:1.2rem;flex-shrink:0}
+.rep-info{flex:1;min-width:0}
+.rep-titulo{font-weight:700;font-size:.79rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rep-detalhe{font-size:.67rem;color:var(--texto2);margin-top:1px}
+.rep-badge{font-family:'Bebas Neue',cursive;font-size:.88rem;padding:1px 8px;border-radius:20px;letter-spacing:1px;flex-shrink:0;color:#fff}
+.rep-badge.rep{background:var(--repetida)}.rep-badge.col{background:var(--colada)}.rep-badge.flt{background:var(--falta);color:var(--texto2)}.rep-badge.bri{background:var(--brilhante);color:#000}
+.btn-copiar{width:100%;background:rgba(0,200,83,.1);border:1px solid rgba(0,200,83,.3);color:var(--colada);font-family:'Bebas Neue',cursive;font-size:.9rem;letter-spacing:1.5px;padding:10px;border-radius:9px;cursor:pointer;margin-bottom:10px;transition:all .2s}
+.btn-copiar:active{transform:scale(.98)}
+.vazio{text-align:center;padding:24px 20px;color:var(--texto2)}
+.vazio-icon{font-size:2.2rem;margin-bottom:7px}
+.vazio p{font-size:.79rem}
+
+/* ESTATÍSTICAS */
+#pageStats{padding:12px 12px 80px}
+.stats-title{font-family:'Bebas Neue',cursive;font-size:1.25rem;letter-spacing:2px;color:var(--amarelo);margin-bottom:12px}
+.sec-title{font-family:'Bebas Neue',cursive;font-size:.76rem;letter-spacing:2.5px;color:var(--texto2);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.big-pct-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px;text-align:center}
+.big-val{font-family:'Bebas Neue',cursive;font-size:3.8rem;color:var(--amarelo);line-height:1;text-shadow:0 0 30px rgba(255,215,0,.25)}
+.big-desc{font-size:.73rem;color:var(--texto2);font-weight:600;margin-top:3px}
+.big-bar{height:10px;background:var(--falta);border-radius:20px;margin-top:12px;overflow:hidden}
+.big-bar-fill{height:100%;background:linear-gradient(90deg,var(--verde),var(--amarelo));border-radius:20px;transition:width .6s ease}
+.big-sub{display:flex;justify-content:space-between;margin-top:8px;font-size:.67rem;font-weight:600}
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+.stat-tile{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;position:relative;overflow:hidden}
+.stat-tile::after{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.stat-tile.verde::after{background:var(--colada)}.stat-tile.amarelo::after{background:var(--amarelo)}
+.stat-tile.laranja::after{background:var(--repetida)}.stat-tile.gold::after{background:var(--brilhante)}.stat-tile.azul::after{background:#4a90d9}
+.stv{font-family:'Bebas Neue',cursive;font-size:2.2rem;line-height:1;margin-bottom:2px}
+.stat-tile.verde .stv{color:var(--colada)}.stat-tile.amarelo .stv{color:var(--amarelo)}
+.stat-tile.laranja .stv{color:var(--repetida)}.stat-tile.gold .stv{color:var(--brilhante)}.stat-tile.azul .stv{color:#4a90d9}
+.stl{font-size:.66rem;font-weight:700;color:var(--texto2);text-transform:uppercase;letter-spacing:.4px}
+.sts{font-size:.59rem;color:var(--texto2);margin-top:2px;opacity:.7}
+.confed-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.confed-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.confed-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.confed-nome{font-weight:700;font-size:.77rem}
+.confed-pct{font-family:'Bebas Neue',cursive;font-size:.95rem;color:var(--amarelo)}
+.confed-bar{height:5px;background:var(--falta);border-radius:10px;overflow:hidden}
+.confed-bar-fill{height:100%;background:linear-gradient(90deg,var(--verde),var(--amarelo));border-radius:10px;transition:width .5s ease}
+.confed-sub{font-size:.63rem;color:var(--texto2);margin-top:4px}
+.completas-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:14px}
+.completa-item{display:inline-flex;align-items:center;gap:4px;font-size:.76rem;margin:3px 4px 3px 0}
+
+/* FWC legenda categorias */
+.fwc-legend{display:flex;gap:10px;padding:6px 10px 8px;flex-wrap:wrap}
+.fwc-leg-item{display:flex;align-items:center;gap:4px;font-size:.64rem;font-weight:700;color:var(--texto2)}
+.fwc-leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.fwc-leg-dot.esp{background:var(--brilhante)}.fwc-leg-dot.pal{background:#4a90d9}.fwc-leg-dot.his{background:#b464dc}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-top">
+    <span style="font-size:1.5rem">🏆</span>
+    <h1>ÁLBUM COPA 2026</h1>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="barraGlobal" style="width:0%"></div></div>
+  <div class="progress-stats">
+    <span class="stat-coladas">✅ <span id="totalColadas">0</span></span>
+    <span class="stat-faltam">⚠️ <span id="totalFaltam">0</span></span>
+    <span class="stat-repetidas">🔄 <span id="totalRepetidas">0</span></span>
+    <span class="stat-pct" id="pctGlobal">0%</span>
+  </div>
+</header>
+
+<!-- PÁGINA ÁLBUM -->
+<div id="pageAlbum" class="page ativo">
+  <div class="controles">
+    <input class="busca" type="text" placeholder="🔍 Buscar seleção..." id="buscaInput">
+    <div class="filtros-row" id="filtrosEstado">
+      <button class="filtro-btn ativo" data-filtro="todos">Todas</button>
+      <button class="filtro-btn" data-filtro="faltam">⚠️ Faltam</button>
+      <button class="filtro-btn" data-filtro="coladas">✅ Coladas</button>
+      <button class="filtro-btn" data-filtro="repetidas">🔄 Repetidas</button>
+      <button class="filtro-btn" data-filtro="A">Grupo A</button>
+      <button class="filtro-btn" data-filtro="B">Grupo B</button>
+      <button class="filtro-btn" data-filtro="C">Grupo C</button>
+      <button class="filtro-btn" data-filtro="D">Grupo D</button>
+      <button class="filtro-btn" data-filtro="E">Grupo E</button>
+      <button class="filtro-btn" data-filtro="F">Grupo F</button>
+      <button class="filtro-btn" data-filtro="G">Grupo G</button>
+      <button class="filtro-btn" data-filtro="H">Grupo H</button>
+      <button class="filtro-btn" data-filtro="I">Grupo I</button>
+      <button class="filtro-btn" data-filtro="J">Grupo J</button>
+      <button class="filtro-btn" data-filtro="K">Grupo K</button>
+      <button class="filtro-btn" data-filtro="L">Grupo L</button>
+    </div>
+    <div class="filtros-row" id="filtrosOrdem">
+      <button class="filtro-btn ord ativo" data-ordem="album">📖 Álbum</button>
+      <button class="filtro-btn ord" data-ordem="alfa">🔤 A–Z</button>
+      <button class="filtro-btn ord" data-ordem="faltam">⚠️ + Faltam</button>
+      <button class="filtro-btn ord" data-ordem="coladas">✅ + Coladas</button>
+    </div>
+  </div>
+  <div class="legenda">
+    <div class="leg-item"><div class="leg-dot c"></div>Colada</div>
+    <div class="leg-item"><div class="leg-dot r"></div>Repetida</div>
+    <div class="leg-item"><div class="leg-dot f"></div>Falta</div>
+    <div class="leg-item"><div class="leg-dot b"></div>✨ Brilhante</div>
+  </div>
+  <div class="instrucao"><strong>Toque rápido</strong> = colada &nbsp;·&nbsp; <strong>Toque longo</strong> = repetida (+1)</div>
+  <main id="mainContent"></main>
+  <div class="fabs">
+    <button class="fab gold" id="btnBrilhantes">✨ BRILHANTES</button>
+    <button class="fab verde" id="btnModal">📋 REPETIDAS/FALTAM</button>
+  </div>
+</div>
+
+<!-- PÁGINA ESTATÍSTICAS -->
+<div id="pageStats" class="page">
+  <div style="padding:12px 4px 0 4px">
+    <div class="stats-title">📊 ESTATÍSTICAS</div>
+
+    <div class="big-pct-card">
+      <div class="big-val" id="sBigPct">0%</div>
+      <div class="big-desc">do álbum completo</div>
+      <div class="big-bar"><div class="big-bar-fill" id="sBigBar" style="width:0%"></div></div>
+      <div class="big-sub">
+        <span style="color:var(--colada)">✅ <span id="sBigCol">0</span> coladas</span>
+        <span style="color:var(--texto2)"><span id="sBigTot">0</span> figurinhas</span>
+        <span style="color:var(--amarelo)">⚠️ <span id="sBigFlt">0</span> faltam</span>
+      </div>
+    </div>
+
+    <div class="sec-title">RESUMO GERAL</div>
+    <div class="stat-grid">
+      <div class="stat-tile verde"><div class="stv" id="sColadas">0</div><div class="stl">Coladas</div><div class="sts" id="sColadasSub"></div></div>
+      <div class="stat-tile amarelo"><div class="stv" id="sFaltam">0</div><div class="stl">Faltam</div><div class="sts" id="sFaltamSub"></div></div>
+      <div class="stat-tile laranja"><div class="stv" id="sRepetidas">0</div><div class="stl">Repetidas</div><div class="sts">cópias extras</div></div>
+      <div class="stat-tile azul"><div class="stv" id="sTotal">0</div><div class="stl">Total Álbum</div><div class="sts">figurinhas</div></div>
+    </div>
+
+    <div class="sec-title">✨ BRILHANTES</div>
+    <div class="stat-grid" style="margin-bottom:14px">
+      <div class="stat-tile verde"><div class="stv" id="sBriCol">0</div><div class="stl">Coladas</div></div>
+      <div class="stat-tile amarelo"><div class="stv" id="sBriFlt">0</div><div class="stl">Faltam</div></div>
+      <div class="stat-tile laranja"><div class="stv" id="sBriRep">0</div><div class="stl">Repetidas</div></div>
+      <div class="stat-tile gold"><div class="stv" id="sBriTot">0</div><div class="stl">Total</div></div>
+    </div>
+
+    <div class="sec-title">POR GRUPO</div>
+    <div class="confed-list" id="sGrupos"></div>
+
+    <div class="sec-title">SELEÇÕES COMPLETAS 🏆</div>
+    <div class="completas-wrap" id="sCompletas"></div>
+  </div>
+</div>
+
+<!-- BOTTOM TABS -->
+<div class="bottom-tabs">
+  <button class="bottom-tab ativo" data-page="pageAlbum">
+    <span class="tab-icon">📖</span>ÁLBUM
+  </button>
+  <button class="bottom-tab" data-page="pageStats">
+    <span class="tab-icon">📊</span>STATS
+  </button>
+</div>
+
+<!-- MODAL REPETIDAS/FALTAM -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-header-txt"><h2>📋 MINHAS FIGURINHAS</h2><p>Listas prontas pra mandar no WhatsApp</p></div>
+      <button class="modal-close" id="closeModal">✕</button>
+    </div>
+    <div class="modal-tabs">
+      <button class="tab-btn ativo" data-tab="tabRep">🔄 Repetidas</button>
+      <button class="tab-btn" data-tab="tabFalt">⚠️ Faltam</button>
+    </div>
+    <div class="tab-content ativo" id="tabRep">
+      <button class="btn-copiar" id="copiarRep">📋 COPIAR PRA WHATSAPP</button>
+      <div class="lista-itens" id="listaRep"></div>
+    </div>
+    <div class="tab-content" id="tabFalt">
+      <button class="btn-copiar" id="copiarFalt">📋 COPIAR PRA WHATSAPP</button>
+      <div class="lista-itens" id="listaFalt"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL BRILHANTES -->
+<div class="modal-overlay" id="modalBri">
+  <div class="modal gold-top">
+    <div class="modal-header">
+      <div class="modal-header-txt"><h2 class="gold">✨ BRILHANTES</h2><p>FWC 00–04 · nº 1 de cada seleção · só troca por brilhante!</p></div>
+      <button class="modal-close" id="closeBri">✕</button>
+    </div>
+    <div class="lista-itens" id="listaBri"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// FWC — 14 figurinhas com 3 subcategorias
+// idx 0-4  → ✨ Especiais brilhantes
+// idx 5-8  → 🌍 Bola e países anfitriões
+// idx 9-13 → 📜 História da Copa
+// ══════════════════════════════════════════════════════════════
+const FWC = {
+  id:'FWC', nome:'Copa do Mundo 2026', flag:'🏆', grupo:'FWC', ord:0,
+  j:[
+    // especiais (brilhantes) 00-04
+    {num:'FWC 00', label:'✨ Especial', cat:'especial'},
+    {num:'FWC 01', label:'✨ Especial', cat:'especial'},
+    {num:'FWC 02', label:'✨ Especial', cat:'especial'},
+    {num:'FWC 03', label:'✨ Especial', cat:'especial'},
+    {num:'FWC 04', label:'✨ Especial', cat:'especial'},
+    // bola + países 05-08
+    {num:'FWC 05', label:'Bola Oficial', cat:'paises'},
+    {num:'FWC 06', label:'EUA',          cat:'paises'},
+    {num:'FWC 07', label:'México',        cat:'paises'},
+    {num:'FWC 08', label:'Canadá',        cat:'paises'},
+    // história 09-13
+    {num:'FWC 09', label:'História',      cat:'historia'},
+    {num:'FWC 10', label:'História',      cat:'historia'},
+    {num:'FWC 11', label:'História',      cat:'historia'},
+    {num:'FWC 12', label:'História',      cat:'historia'},
+    {num:'FWC 13', label:'História',      cat:'historia'},
+  ]
+};
+
+// ══════════════════════════════════════════════════════════════
+// SELEÇÕES — ordem dos grupos da Copa 2026 (conforme álbum Panini)
+// Grupo A: MEX RSA KOR CZE
+// Grupo B: CAN BIH QAT SUI
+// Grupo C: BRA MAR HAI SCO
+// Grupo D: USA PAR AUS TUR
+// Grupo E: GER CUW CIV ECU
+// Grupo F: NED JPN SWE TUN
+// Grupo G: BEL EGY IRN NZL
+// Grupo H: ESP CPV KSA URU
+// Grupo I: FRA SEN IRQ NOR
+// Grupo J: ARG ALG AUT JOR
+// Grupo K: POR COD UZB COL
+// Grupo L: ENG CRO GHA PAN
+// ══════════════════════════════════════════════════════════════
+const SELECOES_DEF = [
+  // GRUPO A
+  {id:'MEX',nome:'México',           flag:'🇲🇽',grupo:'A',ord:1},
+  {id:'RSA',nome:'África do Sul',    flag:'🇿🇦',grupo:'A',ord:2},
+  {id:'KOR',nome:'Coreia do Sul',    flag:'🇰🇷',grupo:'A',ord:3},
+  {id:'CZE',nome:'Rep. Tcheca',      flag:'🇨🇿',grupo:'A',ord:4},
+  // GRUPO B
+  {id:'CAN',nome:'Canadá',           flag:'🇨🇦',grupo:'B',ord:5},
+  {id:'BIH',nome:'Bósnia e Herz.',   flag:'🇧🇦',grupo:'B',ord:6},
+  {id:'QAT',nome:'Catar',            flag:'🇶🇦',grupo:'B',ord:7},
+  {id:'SUI',nome:'Suíça',            flag:'🇨🇭',grupo:'B',ord:8},
+  // GRUPO C
+  {id:'BRA',nome:'Brasil',           flag:'🇧🇷',grupo:'C',ord:9},
+  {id:'MAR',nome:'Marrocos',         flag:'🇲🇦',grupo:'C',ord:10},
+  {id:'HAI',nome:'Haiti',            flag:'🇭🇹',grupo:'C',ord:11},
+  {id:'SCO',nome:'Escócia',          flag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿',grupo:'C',ord:12},
+  // GRUPO D
+  {id:'USA',nome:'Estados Unidos',   flag:'🇺🇸',grupo:'D',ord:13},
+  {id:'PAR',nome:'Paraguai',         flag:'🇵🇾',grupo:'D',ord:14},
+  {id:'AUS',nome:'Austrália',        flag:'🇦🇺',grupo:'D',ord:15},
+  {id:'TUR',nome:'Turquia',          flag:'🇹🇷',grupo:'D',ord:16},
+  // GRUPO E
+  {id:'GER',nome:'Alemanha',         flag:'🇩🇪',grupo:'E',ord:17},
+  {id:'CUW',nome:'Curaçao',          flag:'🇨🇼',grupo:'E',ord:18},
+  {id:'CIV',nome:'Costa do Marfim',  flag:'🇨🇮',grupo:'E',ord:19},
+  {id:'ECU',nome:'Equador',          flag:'🇪🇨',grupo:'E',ord:20},
+  // GRUPO F
+  {id:'NED',nome:'Holanda',          flag:'🇳🇱',grupo:'F',ord:21},
+  {id:'JPN',nome:'Japão',            flag:'🇯🇵',grupo:'F',ord:22},
+  {id:'SWE',nome:'Suécia',           flag:'🇸🇪',grupo:'F',ord:23},
+  {id:'TUN',nome:'Tunísia',          flag:'🇹🇳',grupo:'F',ord:24},
+  // GRUPO G
+  {id:'BEL',nome:'Bélgica',          flag:'🇧🇪',grupo:'G',ord:25},
+  {id:'EGY',nome:'Egito',            flag:'🇪🇬',grupo:'G',ord:26},
+  {id:'IRN',nome:'Irã',              flag:'🇮🇷',grupo:'G',ord:27},
+  {id:'NZL',nome:'Nova Zelândia',    flag:'🇳🇿',grupo:'G',ord:28},
+  // GRUPO H
+  {id:'ESP',nome:'Espanha',          flag:'🇪🇸',grupo:'H',ord:29},
+  {id:'CPV',nome:'Cabo Verde',       flag:'🇨🇻',grupo:'H',ord:30},
+  {id:'KSA',nome:'Arábia Saudita',   flag:'🇸🇦',grupo:'H',ord:31},
+  {id:'URU',nome:'Uruguai',          flag:'🇺🇾',grupo:'H',ord:32},
+  // GRUPO I
+  {id:'FRA',nome:'França',           flag:'🇫🇷',grupo:'I',ord:33},
+  {id:'SEN',nome:'Senegal',          flag:'🇸🇳',grupo:'I',ord:34},
+  {id:'IRQ',nome:'Iraque',           flag:'🇮🇶',grupo:'I',ord:35},
+  {id:'NOR',nome:'Noruega',          flag:'🇳🇴',grupo:'I',ord:36},
+  // GRUPO J
+  {id:'ARG',nome:'Argentina',        flag:'🇦🇷',grupo:'J',ord:37},
+  {id:'ALG',nome:'Argélia',          flag:'🇩🇿',grupo:'J',ord:38},
+  {id:'AUT',nome:'Áustria',          flag:'🇦🇹',grupo:'J',ord:39},
+  {id:'JOR',nome:'Jordânia',         flag:'🇯🇴',grupo:'J',ord:40},
+  // GRUPO K
+  {id:'POR',nome:'Portugal',         flag:'🇵🇹',grupo:'K',ord:41},
+  {id:'COD',nome:'RD do Congo',      flag:'🇨🇩',grupo:'K',ord:42},
+  {id:'UZB',nome:'Uzbequistão',      flag:'🇺🇿',grupo:'K',ord:43},
+  {id:'COL',nome:'Colômbia',         flag:'🇨🇴',grupo:'K',ord:44},
+  // GRUPO L
+  {id:'ENG',nome:'Inglaterra',       flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',grupo:'L',ord:45},
+  {id:'CRO',nome:'Croácia',          flag:'🇭🇷',grupo:'L',ord:46},
+  {id:'GHA',nome:'Gana',             flag:'🇬🇭',grupo:'L',ord:47},
+  {id:'PAN',nome:'Panamá',           flag:'🇵🇦',grupo:'L',ord:48},
+];
+
+// Gera 20 figurinhas por seleção — idx 0 = fig 1 = ✨ brilhante
+const SELECOES = SELECOES_DEF.map(s => ({
+  ...s,
+  j: Array.from({length:20}, (_, i) => ({
+    num: s.id + (i+1),
+    label: i === 0 ? s.id + ' 1 ✨' : s.id + ' ' + (i+1),
+    cat: i === 0 ? 'brilhante' : 'normal'
+  }))
+}));
+
+const TODAS = [FWC, ...SELECOES];
+
+// ══════════════════════════════════════════════════
+// DADOS INICIAIS
+// ══════════════════════════════════════════════════
+const FALTANTES_INI = {
+  FWC:[0,3,4,5,6,7,8,11,12],
+  MEX:[16,18,19,20],KOR:[5,13,17,19],CZE:[1,2,12],CAN:[1,6,13,15,17,19],
+  BIH:[1,4,12,18,19,20],QAT:[4],SUI:[14,18,19],BRA:[4,13,17,20],
+  MAR:[1,4,5,7,19],HAI:[1,8,19],SCO:[4,8,12,17],USA:[1,2,6,7,15,16,19,20],
+  PAR:[5,10,12,14,15,17,18,19,20],AUS:[1,4],TUR:[1],GER:[4],
+  CUW:[4,7,8,11,12,13,17,20],CIV:[4,6,16],ECU:[2,7,14],NED:[3,5,12,19],
+  JPN:[2,13],SWE:[1,4,8,12,14],TUN:[2,6,16],BEL:[1,4,5,13,16],
+  EGY:[1,3,12,13],IRN:[3,13,15],NZL:[1,3,7,11,13,14],CPV:[1,4,16],
+  KSA:[11,16],URU:[4],FRA:[1,16,17,20],SEN:[3,8],IRQ:[1,9,14],
+  NOR:[3,4,15,16],ARG:[4,6,17],ALG:[12,13,14,15,18,19],AUT:[1,20],
+  JOR:[4,8],POR:[3,6,10,13,14,16,18,19],COD:[1,2,3,6,8,10,12,15,17],
+  UZB:[1,5,16,17,20],COL:[4,20],ENG:[1,10],CRO:[1,13],GHA:[4,13,16,19,20],
+  PAN:[2,3,6,16,17,18,19],
+};
+const REPETIDAS_INI = {
+  MEX:[5,9,14],RSA:[2,3,4,5,8,12,17],KOR:[1,3,9,11],CAN:[4,8,11,12],
+  QAT:[10,11,12,15,16,20],SUI:[6],BRA:[3,6,7,8,9,14,15],
+  MAR:[2,3,6,10,15,16,20],HAI:[2,6,11,15,16],SCO:[5,9,18],
+  PAR:[2,8,11,16],AUS:[2,3,6,12,16,20],GER:[1,6,20],CUW:[1,3,15],
+  CIV:[9,14,19],ECU:[6,8,17,19],NED:[1,7,10],JPN:[5,19,20],
+  BEL:[2,3,8,9,12,17,19],EGY:[5,17,18],IRN:[1,5,8,9,12,14],
+  NZL:[8,10,16],ESP:[1,6,10,15,20],CPV:[2,3,6,19],KSA:[8,14,17,18],
+  URU:[1],FRA:[2,9],SEN:[5,9,11,14,16,17,18],NOR:[5,8,9,12,17],
+  ARG:[3,5,8,15,19,20],ALG:[8,11],AUT:[4,10,17,18],
+  JOR:[2,3,11,12,14,16,20],POR:[1,2,5,8,15],COL:[8],
+  ENG:[4,5,8,12,14,15,17,19,20],CRO:[2,3,4,5,6,7,8,10,11,12,14,15,16],
+  GHA:[3,5,6,9,10,11,15],PAN:[4],
+};
+
+// ══════════════════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════════════════
+let estado={}, qtd={}, filtro='todos', ordem='album';
+const K = (sid,i) => sid+'-'+i;
+
+function salvar(){ try{ localStorage.setItem('copa26v5_e',JSON.stringify(estado)); localStorage.setItem('copa26v5_q',JSON.stringify(qtd)); }catch(e){} }
+
+function carregar(){
+  try{
+    const e=localStorage.getItem('copa26v5_e');
+    if(e){ estado=JSON.parse(e); qtd=JSON.parse(localStorage.getItem('copa26v5_q')||'{}'); return; }
+    // Migração versões anteriores
+    const eOld=localStorage.getItem('copa26v4_e')||localStorage.getItem('copa26v3_e');
+    if(eOld){ estado=JSON.parse(eOld); qtd=JSON.parse(localStorage.getItem('copa26v4_q')||localStorage.getItem('copa26v3_q')||'{}'); salvar(); return; }
+  }catch(ex){}
+  importarDados();
+}
+
+function importarDados(){
+  TODAS.forEach(s=>{
+    const isFWC = s.id==='FWC';
+    const fSet = new Set(isFWC ? (FALTANTES_INI[s.id]||[]) : (FALTANTES_INI[s.id]||[]).map(n=>n-1));
+    const rSet = new Set(isFWC ? [] : (REPETIDAS_INI[s.id]||[]).map(n=>n-1));
+    s.j.forEach((_,i)=>{
+      const k=K(s.id,i);
+      if(rSet.has(i))      { estado[k]='repetida'; qtd[k]=1; }
+      else if(fSet.has(i)) { /* falta */ }
+      else                 { estado[k]='colada'; }
+    });
+  });
+  salvar();
+}
+
+// ══════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════
+function eBri(sid,idx){
+  if(sid==='FWC') return idx<=4; // especiais
+  return idx===0; // fig 1 de cada seleção
+}
+
+function stats(s){
+  let col=0,rep=0;
+  s.j.forEach((_,i)=>{ const st=estado[K(s.id,i)]; if(st==='colada')col++; else if(st==='repetida')rep++; });
+  return {col,rep,flt:s.j.length-col-rep,tot:s.j.length};
+}
+
+function statsGlobal(){
+  let tf=0,tc=0,tr=0,bf=0,bc=0,br=0;
+  TODAS.forEach(s=>{ tf+=s.j.length; s.j.forEach((_,i)=>{ const st=estado[K(s.id,i)],b=eBri(s.id,i); if(st==='colada'){tc++;if(b)bc++;} else if(st==='repetida'){tr++;if(b)br++;} else{if(b)bf++;} }); });
+  return {tf,tc,tr,tFlt:tf-tc-tr,bc,br,bf,bTot:bc+br+bf};
+}
+
+// ══════════════════════════════════════════════════
+// RENDER ÁLBUM
+// ══════════════════════════════════════════════════
+function renderTudo(){
+  const q=document.getElementById('buscaInput').value.toLowerCase().trim();
+  const main=document.getElementById('mainContent');
+  const abertos=new Set([...document.querySelectorAll('.selecao-card.aberto')].map(el=>el.id.replace('card-','')));
+
+  let lista=TODAS.filter(s=>{
+    if(q && !s.nome.toLowerCase().includes(q) && !s.id.toLowerCase().includes(q)) return false;
+    if(filtro==='coladas')   return s.j.some((_,i)=>estado[K(s.id,i)]==='colada');
+    if(filtro==='faltam')    return s.j.some((_,i)=>!estado[K(s.id,i)]);
+    if(filtro==='repetidas') return s.j.some((_,i)=>estado[K(s.id,i)]==='repetida');
+    if('ABCDEFGHIJKL'.includes(filtro) && filtro.length===1) return s.grupo===filtro;
+    return true;
+  });
+
+  if(ordem==='alfa')        lista=[...lista].sort((a,b)=>a.nome.localeCompare(b.nome,'pt'));
+  else if(ordem==='faltam') lista=[...lista].sort((a,b)=>stats(b).flt-stats(a).flt);
+  else if(ordem==='coladas')lista=[...lista].sort((a,b)=>stats(b).col-stats(a).col);
+  else                      lista=[...lista].sort((a,b)=>a.ord-b.ord);
+
+  if(!lista.length){ main.innerHTML='<div class="vazio"><div class="vazio-icon">🔍</div><p>Nenhuma seleção encontrada</p></div>'; atualizarContadores(); return; }
+
+  const showGrupo = ordem==='album' && !['coladas','faltam','repetidas'].includes(filtro) && !q;
+  let html='', grupoAtual=null;
+
+  lista.forEach(s=>{
+    const {col,rep,flt}=stats(s);
+    const pct=Math.round(col/s.j.length*100);
+    const ok=flt===0&&rep===0&&col>0;
+    const aberto=abertos.has(s.id);
+
+    if(showGrupo && s.grupo!==grupoAtual){
+      grupoAtual=s.grupo;
+      if(s.grupo==='FWC'){
+        html+='<div class="grupo-label">🏆 ESPECIAIS FWC</div>';
+      } else {
+        const selsDoGrupo=lista.filter(x=>x.grupo===s.grupo);
+        const flags=selsDoGrupo.map(x=>x.flag).join('');
+        html+='<div class="grupo-label">⚽ GRUPO '+s.grupo+' <span class="grupo-flags">'+flags+'</span></div>';
+      }
+    }
+
+    const miniStats=ok
+      ?'<span class="completa-badge">🏆 Completa!</span>'
+      :(col>0?'<span class="mini-badge c">✅'+col+'</span>':'')
+      +(rep>0?'<span class="mini-badge r">🔄'+rep+'</span>':'')
+      +(flt>0?'<span class="mini-badge f">⚠️'+flt+'</span>':'');
+
+    // subtítulo
+    const grupoLabel = s.grupo==='FWC' ? '🏆 Especiais' : 'Grupo '+s.grupo;
+
+    html+=
+      '<div class="selecao-card'+(ok?' completa':'')+(aberto?' aberto':'')+'" id="card-'+s.id+'">' +
+        '<div class="selecao-progress"><div class="selecao-progress-fill'+(ok?' cheia':'')+'" style="width:'+pct+'%"></div></div>' +
+        '<div class="selecao-header" data-sid="'+s.id+'">' +
+          '<span class="sel-flag">'+s.flag+'</span>' +
+          '<div class="sel-info">' +
+            '<div class="sel-nome">'+s.nome+'</div>' +
+            '<div class="sel-meta">'+s.id+' · '+grupoLabel+'</div>' +
+          '</div>' +
+          '<div class="sel-mini-stats">'+miniStats+'</div>' +
+          '<span class="chevron">▼</span>' +
+        '</div>' +
+        '<div class="acoes-massa">' +
+          '<button class="acao-btn todas-coladas" data-acao="todas" data-sid="'+s.id+'">✅ Todas coladas</button>' +
+          '<button class="acao-btn limpar" data-acao="limpar" data-sid="'+s.id+'">🗑️ Limpar</button>' +
+        '</div>' +
+        // FWC: legenda de categorias dentro do card
+        (s.id==='FWC'?'<div class="fwc-legend"><div class="fwc-leg-item"><div class="fwc-leg-dot esp"></div>✨ Especial (00–04)</div><div class="fwc-leg-item"><div class="fwc-leg-dot pal"></div>Bola/Países (05–08)</div><div class="fwc-leg-item"><div class="fwc-leg-dot his"></div>História (09–13)</div></div>':'') +
+        '<div class="figurinhas-grid'+(s.id==='FWC'?' fwc-grid':'')+'" id="grid-'+s.id+'">'+renderGridHTML(s,q)+'</div>' +
+      '</div>';
+  });
+
+  main.innerHTML=html;
+  atualizarContadores();
+}
+
+function renderGridHTML(s,q){ return s.j.map((_,i)=>renderFig(s.id,i,s.j[i],q||'')).join(''); }
+
+function renderFig(sid,idx,fig,q){
+  const k=K(sid,idx), st=estado[k]||'', n=qtd[k]||1;
+  const bri=eBri(sid,idx);
+  const cat=fig.cat; // 'especial','paises','historia','brilhante','normal'
+
+  // classes CSS da figurinha
+  let classes='figurinha';
+  if(st) classes+=' '+st;
+  if(cat==='especial') classes+=' brilhante fwc-especial';
+  else if(cat==='paises') classes+=' fwc-paises';
+  else if(cat==='historia') classes+=' fwc-historia';
+  else if(cat==='brilhante' && !st) classes+=' brilhante';
+  else if(cat==='brilhante' && st==='colada') classes+=' brilhante';
+  else if(cat==='brilhante' && st==='repetida') classes+=' brilhante';
+
+  const hl = q && sid.toLowerCase().includes(q)?'outline:2px solid var(--amarelo);':'';
+  const stTxt = st==='colada'?'✅':st==='repetida'?'×'+n:'';
+  const qtdB = (st==='repetida'&&n>1)?'<div class="fig-qtd">'+n+'</div>':'';
+
+  // ícone brilhante para especiais e fig 1
+  const briIcon = (cat==='especial'||cat==='brilhante')?'<div class="brilhante-icon">✨</div>':'';
+
+  // categoria no canto para FWC não-especial
+  let catIcon='';
+  if(cat==='paises')  catIcon='<div class="fig-cat">🌍</div>';
+  if(cat==='historia')catIcon='<div class="fig-cat">📜</div>';
+
+  return '<div class="'+classes+'"'+
+    ' style="'+hl+'"'+
+    ' id="fig-'+sid+'-'+idx+'"'+
+    ' data-sid="'+sid+'" data-idx="'+idx+'">' +
+    qtdB+briIcon+catIcon+
+    '<div class="fig-num">'+fig.num+'</div>'+
+    '<div class="fig-status">'+stTxt+'</div>'+
+    '<div class="brilhante-aviso">✨ bri</div>'+
+    '</div>';
+}
+
+// ══════════════════════════════════════════════════
+// INTERAÇÃO
+// ══════════════════════════════════════════════════
+let longT=null,longOk=false;
+function iniciarLongo(sid,idx){ longOk=false; longT=setTimeout(()=>{ longOk=true; executarLongo(sid,idx); },480); }
+function cancelarLongo(){ if(longT){clearTimeout(longT);longT=null;} }
+function executarLongo(sid,idx){
+  const k=K(sid,idx);
+  if(estado[k]==='repetida'){qtd[k]=(qtd[k]||1)+1;} else{estado[k]='repetida';qtd[k]=1;}
+  salvar(); atualizarFig(sid,idx); atualizarHeaderCard(sid); atualizarContadores();
+}
+function executarToque(sid,idx){
+  if(longOk){longOk=false;return;}
+  const k=K(sid,idx),at=estado[k]||'';
+  if(at==='repetida') return;
+  if(at==='colada'){delete estado[k];delete qtd[k];} else{estado[k]='colada';}
+  salvar(); atualizarFig(sid,idx); atualizarHeaderCard(sid); atualizarContadores();
+}
+function atualizarFig(sid,idx){
+  const el=document.getElementById('fig-'+sid+'-'+idx); if(!el) return;
+  const s=TODAS.find(x=>x.id===sid); if(!s) return;
+  const q=document.getElementById('buscaInput').value.toLowerCase().trim();
+  const tmp=document.createElement('div'); tmp.innerHTML=renderFig(sid,idx,s.j[idx],q);
+  el.replaceWith(tmp.firstChild);
+}
+function atualizarHeaderCard(sid){
+  const s=TODAS.find(x=>x.id===sid), card=document.getElementById('card-'+sid);
+  if(!s||!card) return;
+  const {col,rep,flt}=stats(s), pct=Math.round(col/s.j.length*100), ok=flt===0&&rep===0&&col>0;
+  const fill=card.querySelector('.selecao-progress-fill');
+  if(fill){fill.style.width=pct+'%';fill.classList.toggle('cheia',ok);}
+  card.classList.toggle('completa',ok);
+  const mini=card.querySelector('.sel-mini-stats');
+  if(mini) mini.innerHTML=ok?'<span class="completa-badge">🏆 Completa!</span>':
+    (col>0?'<span class="mini-badge c">✅'+col+'</span>':'')+(rep>0?'<span class="mini-badge r">🔄'+rep+'</span>':'')+(flt>0?'<span class="mini-badge f">⚠️'+flt+'</span>':'');
+}
+function atualizarContadores(){
+  const g=statsGlobal();
+  document.getElementById('totalColadas').textContent=g.tc;
+  document.getElementById('totalFaltam').textContent=g.tFlt;
+  document.getElementById('totalRepetidas').textContent=g.tr;
+  const pct=(g.tc/g.tf*100).toFixed(1);
+  document.getElementById('pctGlobal').textContent=pct+'%';
+  document.getElementById('barraGlobal').style.width=pct+'%';
+  if(document.getElementById('pageStats').classList.contains('ativo')) renderStats(g);
+}
+
+// ══════════════════════════════════════════════════
+// ESTATÍSTICAS
+// ══════════════════════════════════════════════════
+function renderStats(g){
+  if(!g) g=statsGlobal();
+  const pct=(g.tc/g.tf*100).toFixed(1);
+  document.getElementById('sBigPct').textContent=pct+'%';
+  document.getElementById('sBigBar').style.width=pct+'%';
+  document.getElementById('sBigCol').textContent=g.tc;
+  document.getElementById('sBigTot').textContent=g.tf;
+  document.getElementById('sBigFlt').textContent=g.tFlt;
+  document.getElementById('sColadas').textContent=g.tc;
+  document.getElementById('sColadasSub').textContent='de '+g.tf+' figurinhas';
+  document.getElementById('sFaltam').textContent=g.tFlt;
+  document.getElementById('sFaltamSub').textContent=((g.tFlt/g.tf)*100).toFixed(0)+'% do total';
+  document.getElementById('sRepetidas').textContent=g.tr;
+  document.getElementById('sTotal').textContent=g.tf;
+  document.getElementById('sBriCol').textContent=g.bc;
+  document.getElementById('sBriFlt').textContent=g.bf;
+  document.getElementById('sBriRep').textContent=g.br;
+  document.getElementById('sBriTot').textContent=g.bTot;
+
+  // Por grupo
+  const GRUPOS=['FWC','A','B','C','D','E','F','G','H','I','J','K','L'];
+  let gh='';
+  GRUPOS.forEach(gr=>{
+    const sels=TODAS.filter(s=>s.grupo===gr); if(!sels.length) return;
+    let col=0,flt=0,rep=0,tot=0;
+    sels.forEach(s=>{const st=stats(s);col+=st.col;flt+=st.flt;rep+=st.rep;tot+=st.tot;});
+    const p=tot>0?(col/tot*100).toFixed(0):0;
+    const label=gr==='FWC'?'🏆 Especiais FWC':'⚽ Grupo '+gr;
+    const flags=sels.map(s=>s.flag).join(' ');
+    gh+='<div class="confed-item">'+
+      '<div class="confed-top"><span class="confed-nome">'+label+' <span style="font-size:.8rem">'+flags+'</span></span><span class="confed-pct">'+p+'%</span></div>'+
+      '<div class="confed-bar"><div class="confed-bar-fill" style="width:'+p+'%"></div></div>'+
+      '<div class="confed-sub">✅ '+col+' coladas · ⚠️ '+flt+' faltam · 🔄 '+rep+' repetidas</div>'+
+    '</div>';
+  });
+  document.getElementById('sGrupos').innerHTML=gh;
+
+  // Completas
+  const completas=TODAS.filter(s=>{const st=stats(s);return st.flt===0&&st.rep===0&&st.col>0;});
+  document.getElementById('sCompletas').innerHTML=completas.length
+    ?completas.map(s=>'<span class="completa-item">'+s.flag+' '+s.nome+'</span>').join('')
+    :'<span style="color:var(--texto2);font-size:.78rem">Nenhuma completa ainda — vai lá! 💪</span>';
+}
+
+// ══════════════════════════════════════════════════
+// DELEGAÇÃO DE EVENTOS
+// ══════════════════════════════════════════════════
+const mainEl=document.getElementById('mainContent');
+mainEl.addEventListener('click',e=>{
+  const h=e.target.closest('.selecao-header');
+  if(h){h.closest('.selecao-card').classList.toggle('aberto');return;}
+  const a=e.target.closest('[data-acao]');
+  if(a){
+    e.stopPropagation();
+    const sid=a.dataset.sid, s=TODAS.find(x=>x.id===sid); if(!s) return;
+    if(a.dataset.acao==='todas') s.j.forEach((_,i)=>{const k=K(sid,i);estado[k]='colada';delete qtd[k];});
+    else s.j.forEach((_,i)=>{const k=K(sid,i);delete estado[k];delete qtd[k];});
+    salvar();
+    const grid=document.getElementById('grid-'+sid);
+    if(grid){const q=document.getElementById('buscaInput').value.toLowerCase().trim();grid.innerHTML=renderGridHTML(s,q);}
+    atualizarHeaderCard(sid);atualizarContadores();return;
+  }
+  const fig=e.target.closest('.figurinha');
+  if(fig) executarToque(fig.dataset.sid,+fig.dataset.idx);
+});
+mainEl.addEventListener('contextmenu',e=>{const fig=e.target.closest('.figurinha');if(fig){e.preventDefault();executarLongo(fig.dataset.sid,+fig.dataset.idx);}});
+mainEl.addEventListener('touchstart',e=>{const fig=e.target.closest('.figurinha');if(fig)iniciarLongo(fig.dataset.sid,+fig.dataset.idx);},{passive:true});
+mainEl.addEventListener('touchend',cancelarLongo,{passive:true});
+mainEl.addEventListener('touchmove',cancelarLongo,{passive:true});
+
+// ══════════════════════════════════════════════════
+// FILTROS / ORDEM
+// ══════════════════════════════════════════════════
+document.getElementById('filtrosEstado').addEventListener('click',e=>{
+  const btn=e.target.closest('.filtro-btn');if(!btn)return;
+  document.querySelectorAll('#filtrosEstado .filtro-btn').forEach(b=>b.classList.remove('ativo'));
+  btn.classList.add('ativo');filtro=btn.dataset.filtro;renderTudo();
+});
+document.getElementById('filtrosOrdem').addEventListener('click',e=>{
+  const btn=e.target.closest('.filtro-btn');if(!btn)return;
+  document.querySelectorAll('#filtrosOrdem .filtro-btn').forEach(b=>b.classList.remove('ativo'));
+  btn.classList.add('ativo');ordem=btn.dataset.ordem;renderTudo();
+});
+document.getElementById('buscaInput').addEventListener('input',renderTudo);
+
+// ══════════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════════
+document.querySelectorAll('.bottom-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.bottom-tab').forEach(t=>t.classList.remove('ativo'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('ativo'));
+    tab.classList.add('ativo');
+    document.getElementById(tab.dataset.page).classList.add('ativo');
+    if(tab.dataset.page==='pageStats') renderStats();
+  });
+});
+
+// ══════════════════════════════════════════════════
+// MODAL REPETIDAS/FALTAM
+// ══════════════════════════════════════════════════
+function abrirModal(){
+  let hR='',temR=false,hF='',temF=false;
+  TODAS.forEach(s=>s.j.forEach((fig,i)=>{
+    const k=K(s.id,i);
+    const b=eBri(s.id,i);
+    if(estado[k]==='repetida'){
+      temR=true;const n=qtd[k]||1;
+      hR+='<div class="rep-item'+(b?' bri':'')+'">'+
+        '<span class="rep-flag">'+s.flag+'</span>'+
+        '<div class="rep-info"><div class="rep-titulo">'+(b?'✨ ':'')+fig.num+'</div>'+
+        '<div class="rep-detalhe">'+s.nome+(b?' · só troca por brilhante':'')+'</div></div>'+
+        '<span class="rep-badge '+(b?'bri':'rep')+'">×'+n+'</span></div>';
+    }
+    if(!estado[k]){
+      temF=true;
+      hF+='<div class="rep-item'+(b?' bri':'')+'">'+
+        '<span class="rep-flag">'+s.flag+'</span>'+
+        '<div class="rep-info"><div class="rep-titulo">'+(b?'✨ ':'')+fig.num+'</div>'+
+        '<div class="rep-detalhe">'+s.nome+(b?' · brilhante':'')+'</div></div></div>';
+    }
+  }));
+  document.getElementById('listaRep').innerHTML=temR?hR:'<div class="vazio"><div class="vazio-icon">🎉</div><p>Nenhuma repetida!</p></div>';
+  document.getElementById('listaFalt').innerHTML=temF?hF:'<div class="vazio"><div class="vazio-icon">🏆</div><p>Álbum completo!</p></div>';
+  document.getElementById('modalOverlay').classList.add('aberto');
+}
+
+function copiarLista(tipo){
+  const linhas=['🏆 Copa do Mundo 2026\n'];
+  if(tipo==='rep'){
+    linhas.push('🔄 MINHAS REPETIDAS:\n');
+    TODAS.forEach(s=>{
+      const reps=s.j.map((fig,i)=>({fig,i})).filter(({i})=>estado[K(s.id,i)]==='repetida');
+      if(!reps.length)return;
+      linhas.push(s.flag+' '+s.nome+' ('+s.id+'):');
+      reps.forEach(({fig,i})=>{const n=qtd[K(s.id,i)]||1,b=eBri(s.id,i);linhas.push('  '+fig.num+(b?'✨':'')+(n>1?' ×'+n:''));});
+    });
+  } else {
+    linhas.push('⚠️ FALTAM NO MEU ÁLBUM:\n');
+    TODAS.forEach(s=>{
+      const flt=s.j.map((fig,i)=>({fig,i})).filter(({i})=>!estado[K(s.id,i)]);
+      if(!flt.length)return;
+      linhas.push(s.flag+' '+s.nome+' ('+s.id+'):');
+      flt.forEach(({fig,i})=>{const b=eBri(s.id,i);linhas.push('  '+fig.num+(b?'✨':''));});
+    });
+  }
+  const txt=linhas.join('\n');
+  if(navigator.clipboard){navigator.clipboard.writeText(txt).then(()=>alert('✅ Copiado! Cola no WhatsApp.'));}
+  else{const el=document.createElement('textarea');el.value=txt;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('✅ Copiado!');}
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const tabId=btn.dataset.tab,modal=btn.closest('.modal');
+    modal.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('ativo'));
+    modal.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('ativo'));
+    btn.classList.add('ativo');document.getElementById(tabId).classList.add('ativo');
+  });
+});
+
+// ══════════════════════════════════════════════════
+// MODAL BRILHANTES
+// ══════════════════════════════════════════════════
+function abrirBrilhantes(){
+  let h='';
+  TODAS.forEach(s=>s.j.forEach((fig,i)=>{
+    if(!eBri(s.id,i))return;
+    const k=K(s.id,i),st=estado[k]||'';
+    const badge=st==='colada'?'<span class="rep-badge col">✅</span>':st==='repetida'?'<span class="rep-badge bri">×'+(qtd[k]||1)+'</span>':'<span class="rep-badge flt">?</span>';
+    h+='<div class="rep-item bri"><span class="rep-flag">'+s.flag+'</span>'+
+      '<div class="rep-info"><div class="rep-titulo">✨ '+fig.num+' – '+fig.label+'</div>'+
+      '<div class="rep-detalhe">'+s.nome+' · só troca por brilhante</div></div>'+badge+'</div>';
+  }));
+  document.getElementById('listaBri').innerHTML=h;
+  document.getElementById('modalBri').classList.add('aberto');
+}
+
+// ══════════════════════════════════════════════════
+// LISTENERS
+// ══════════════════════════════════════════════════
+document.getElementById('btnModal').addEventListener('click',abrirModal);
+document.getElementById('btnBrilhantes').addEventListener('click',abrirBrilhantes);
+document.getElementById('closeModal').addEventListener('click',()=>document.getElementById('modalOverlay').classList.remove('aberto'));
+document.getElementById('closeBri').addEventListener('click',()=>document.getElementById('modalBri').classList.remove('aberto'));
+document.getElementById('copiarRep').addEventListener('click',()=>copiarLista('rep'));
+document.getElementById('copiarFalt').addEventListener('click',()=>copiarLista('falt'));
+['modalOverlay','modalBri'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',e=>{if(e.target===document.getElementById(id))document.getElementById(id).classList.remove('aberto');});
+});
+
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
+carregar();
+renderTudo();
+</script>
+</body>
+</html>
