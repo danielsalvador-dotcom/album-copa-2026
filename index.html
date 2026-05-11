@@ -743,6 +743,12 @@ function dispararConfete(cardEl){
 // ══════════════════════════════════════════════════
 // RENDER ÁLBUM
 // ══════════════════════════════════════════════════
+// Normaliza texto: remove acentos e deixa minúsculo
+// Assim "africa do sul" acha "África do Sul", "curaçao" acha "Curaçao", etc.
+function norm(str){
+  return str.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+}
+
 const GRUPOS_ORD=['FWC','A','B','C','D','E','F','G','H','I','J','K','L'];
 
 function renderTudo(){
@@ -751,7 +757,7 @@ function renderTudo(){
   const abertos=new Set([...document.querySelectorAll('.selecao-card.aberto')].map(el=>el.id.replace('card-','')));
 
   let lista=TODAS.filter(s=>{
-    if(q&&!s.nome.toLowerCase().includes(q)&&!s.id.toLowerCase().includes(q))return false;
+    if(q&&!norm(s.nome).includes(norm(q))&&!s.id.toLowerCase().includes(q.toLowerCase()))return false;
     if(filtro==='tenho')    return s.j.some((_,i)=>estado[K(s.id,i)]);
     if(filtro==='faltam')   return s.j.some((_,i)=>!estado[K(s.id,i)]);
     if(filtro==='repetidas')return s.j.some((_,i)=>estado[K(s.id,i)]==='repetida');
