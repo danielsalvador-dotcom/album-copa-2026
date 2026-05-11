@@ -405,6 +405,16 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
     </div>
   </div>
   <div class="config-section">
+    <div class="config-section-title">🔍 DIAGNÓSTICO DE DADOS</div>
+    <div class="config-info" style="margin-bottom:10px">
+      <p>Se seus dados sumiram, use o botão abaixo para tentar recuperá-los do celular.</p>
+    </div>
+    <button onclick="diagnosticarStorage()" style="width:100%;background:rgba(74,144,217,.15);border:1px solid rgba(74,144,217,.4);color:#5ba3e0;font-family:'Bebas Neue',cursive;font-size:.95rem;letter-spacing:2px;padding:11px;border-radius:10px;cursor:pointer;margin-bottom:8px">🔍 VER DADOS SALVOS NO CELULAR</button>
+    <button onclick="tentarRecuperar()" style="width:100%;background:rgba(0,200,83,.1);border:1px solid rgba(0,200,83,.3);color:var(--colada);font-family:'Bebas Neue',cursive;font-size:.95rem;letter-spacing:2px;padding:11px;border-radius:10px;cursor:pointer;margin-bottom:0">♻️ TENTAR RECUPERAR DADOS</button>
+    <div id="diagResult" style="margin-top:10px;font-size:.75rem;color:var(--texto2);background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:10px;display:none;word-break:break-all;line-height:1.6"></div>
+  </div>
+
+  <div class="config-section">
     <div class="config-section-title">🗑️ ZERAR ÁLBUM</div>
     <div class="zerar-box">
       <p class="zerar-aviso">Isso vai apagar <strong>TODO o progresso</strong> — figurinhas coladas, repetidas e contagens voltam a zero.<br><br>
@@ -621,6 +631,7 @@ function salvar(){
 }
 function carregar(){
   try{
+    // Tenta chave atual
     const e=localStorage.getItem(SK+'_e');
     if(e){
       estado=JSON.parse(e);
@@ -628,11 +639,25 @@ function carregar(){
       minimizados=new Set(JSON.parse(localStorage.getItem(SK+'_min')||'[]'));
       return;
     }
-    for(const k of['copa26v5_e','copa26v4_e','copa26v3_e']){
-      const v=localStorage.getItem(k);
-      if(v){estado=JSON.parse(v);qtd=JSON.parse(localStorage.getItem(k.replace('_e','_q'))||'{}');salvar();return;}
+    // Varre TODAS as chaves do localStorage procurando dados do app
+    // (funciona independente da versão — v3, v4, v5, qualquer uma)
+    const todasChaves=[];
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k&&k.startsWith('copa26')&&k.endsWith('_e')) todasChaves.push(k);
     }
-  }catch(ex){}
+    // Ordena decrescente para pegar a versão mais recente primeiro
+    todasChaves.sort().reverse();
+    for(const k of todasChaves){
+      const v=localStorage.getItem(k);
+      if(v){
+        estado=JSON.parse(v);
+        qtd=JSON.parse(localStorage.getItem(k.replace('_e','_q'))||'{}');
+        salvar();
+        return;
+      }
+    }
+  }catch(ex){console.error('Erro ao carregar:',ex);}
   importarDados();
 }
 function importarDados(){
@@ -1204,6 +1229,68 @@ document.getElementById('copiarFalt').addEventListener('click',()=>copiarLista('
   document.getElementById(id).addEventListener('click',e=>{if(e.target===document.getElementById(id))document.getElementById(id).classList.remove('aberto');});
 });
 
+// ══════════════════════════════════════════════════
+// DIAGNÓSTICO E RECUPERAÇÃO
+// ══════════════════════════════════════════════════
+function diagnosticarStorage(){
+  var res=document.getElementById('diagResult');
+  res.style.display='block';
+  var txt='Chaves copa26 no localStorage:\n\n';
+  var encontradas=[];
+  for(var i=0;i<localStorage.length;i++){
+    var k=localStorage.key(i);
+    if(k&&k.indexOf('copa26')>=0){
+      encontradas.push(k);
+      var val=localStorage.getItem(k);
+      var info='';
+      if(k.indexOf('_e')===k.length-2&&val){
+        try{
+          var obj=JSON.parse(val);
+          var ks=Object.keys(obj);
+          var coladas=ks.filter(function(x){return obj[x]==='colada';}).length;
+          var reps=ks.filter(function(x){return obj[x]==='repetida';}).length;
+          info=' - '+coladas+' coladas, '+reps+' rep.';
+        }catch(er){info=' - erro ao ler';}
+      }
+      txt+='* '+k+info+'\n';
+    }
+  }
+  if(!encontradas.length)txt+='Nenhum dado encontrado.';
+  res.textContent=txt;
+}
+function tentarRecuperar(){
+  var res=document.getElementById('diagResult');
+  res.style.display='block';
+  var todasChaves=[];
+  for(var i=0;i<localStorage.length;i++){
+    var k=localStorage.key(i);
+    if(k&&k.indexOf('copa26')>=0&&k.indexOf('_e')===k.length-2) todasChaves.push(k);
+  }
+  todasChaves.sort().reverse();
+  if(!todasChaves.length){res.textContent='Nenhum dado encontrado para recuperar.';return;}
+  for(var j=0;j<todasChaves.length;j++){
+    var chave=todasChaves[j];
+    var v=localStorage.getItem(chave);
+    if(v){
+      try{
+        var e=JSON.parse(v);
+        var ks=Object.keys(e);
+        var coladas=ks.filter(function(x){return e[x]==='colada';}).length;
+        var reps=ks.filter(function(x){return e[x]==='repetida';}).length;
+        if(coladas>0||reps>0){
+          estado=e;
+          qtd=JSON.parse(localStorage.getItem(chave.replace('_e','_q'))||'{}');
+          salvar();
+          renderTudo();
+          atualizarContadores();
+          res.textContent='Dados recuperados de '+chave+'! '+coladas+' coladas e '+reps+' repetidas. Va para a aba ALBUM para ver.';
+          return;
+        }
+      }catch(ex){}
+    }
+  }
+  res.textContent='Dados encontrados mas estavam vazios ou corrompidos.';
+}
 // INIT
 carregar();
 renderTudo();
