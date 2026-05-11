@@ -279,7 +279,7 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
     <div class="leg-item"><div class="leg-dot f"></div>Falta</div>
     <div class="leg-item"><div class="leg-dot b"></div>✨ Brilhante</div>
   </div>
-  <div class="instrucao"><strong>Toque rápido</strong> = colada &nbsp;·&nbsp; <strong>Toque longo</strong> = repetida &nbsp;·&nbsp; <strong>Toque no grupo</strong> = minimizar</div>
+  <div class="instrucao"><strong>Toque rápido</strong> = remove 1 &nbsp;·&nbsp; <strong>Toque longo</strong> = +1 repetida &nbsp;·&nbsp; <strong>Toque no grupo</strong> = minimizar</div>
   <main id="mainContent"></main>
   <div class="fabs">
     <button class="fab gold" id="btnBrilhantes">✨ BRILHANTES</button>
@@ -759,15 +759,26 @@ let longT=null,longOk=false;
 function iniciarLongo(sid,idx){longOk=false;longT=setTimeout(()=>{longOk=true;executarLongo(sid,idx);},480);}
 function cancelarLongo(){if(longT){clearTimeout(longT);longT=null;}}
 function executarLongo(sid,idx){
+  // Toque longo: sempre adiciona +1 repetida
   const k=K(sid,idx);
-  if(estado[k]==='repetida'){qtd[k]=(qtd[k]||1)+1;}else{estado[k]='repetida';qtd[k]=1;}
+  if(estado[k]==='repetida'){ qtd[k]=(qtd[k]||1)+1; }
+  else{ estado[k]='repetida'; qtd[k]=1; }
   salvar();atualizarFig(sid,idx);atualizarHeaderCard(sid);atualizarContadores();
 }
 function executarToque(sid,idx){
   if(longOk){longOk=false;return;}
+  // Toque rápido: sempre remove 1
+  // repetida ×3 → ×2 → ×1 → colada → falta
   const k=K(sid,idx),at=estado[k]||'';
-  if(at==='repetida')return;
-  if(at==='colada'){delete estado[k];delete qtd[k];}else{estado[k]='colada';}
+  if(at==='repetida'){
+    const n=qtd[k]||1;
+    if(n>1){ qtd[k]=n-1; }          // diminui 1 repetida
+    else{ estado[k]='colada'; delete qtd[k]; } // última repetida → volta colada
+  } else if(at==='colada'){
+    delete estado[k]; delete qtd[k]; // colada → falta
+  } else {
+    estado[k]='colada';              // falta → colada
+  }
   salvar();atualizarFig(sid,idx);atualizarHeaderCard(sid);atualizarContadores();
 }
 function atualizarFig(sid,idx){
