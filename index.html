@@ -4,14 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Álbum Copa do Mundo 2026</title>
+<link rel="manifest" href="data:application/json,{%22name%22:%22%C3%81lbum%20Copa%202026%22,%22short_name%22:%22Copa%202026%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%230a0f1e%22,%22theme_color%22:%22%23FFD700%22}">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Copa 2026">
+<meta name="theme-color" content="#FFD700">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --verde:#00b140;--verde-dark:#007a2e;--amarelo:#FFD700;--azul:#002868;
   --bg:#0a0f1e;--card:#111827;--card2:#1a2235;--texto:#e8eaf0;--texto2:#8899bb;
-  --colada:#00c853;--repetida:#ff6d00;--falta:#2a3550;--border:#1e2d4a;
-  --brilhante:#c8a200;--brilhante-bg:rgba(255,215,0,0.07);
+  --colada:#00c853;--repetida:#ff6d00;--falta:#1e2d45;--border:#1e2d4a;
+  --brilhante:#c8a200;--brilhante-bg:rgba(255,215,0,0.10);
   --tab-h:52px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -42,8 +47,11 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
 
 /* CONTROLES */
 .controles{padding:9px 12px;background:var(--card);border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:6px;position:sticky;top:96px;z-index:90}
+.controles-top{display:flex;gap:6px;align-items:center}
 .busca{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;color:var(--texto);font-family:'Barlow',sans-serif;font-size:.9rem;width:100%;outline:none;transition:border-color .2s}
 .busca:focus{border-color:var(--verde)}.busca::placeholder{color:var(--texto2)}
+.btn-expand-all{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:8px 10px;color:var(--texto2);cursor:pointer;font-size:.8rem;flex-shrink:0;white-space:nowrap;transition:all .2s}
+.btn-expand-all:active{transform:scale(.95)}
 .filtros-row{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
 .filtros-row::-webkit-scrollbar{display:none}
 .filtro-btn{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:5px 11px;color:var(--texto2);font-family:'Barlow',sans-serif;font-size:.71rem;font-weight:600;white-space:nowrap;cursor:pointer;transition:all .2s;flex-shrink:0}
@@ -51,11 +59,14 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
 .filtro-btn.ord.ativo{background:var(--azul);border-color:#4a6fa5;color:#fff}
 
 /* LEGENDA */
-.legenda{display:flex;gap:12px;padding:6px 12px;background:var(--card);border-bottom:1px solid var(--border);font-size:.66rem;font-weight:600;color:var(--texto2);overflow-x:auto;scrollbar-width:none}
+.legenda{display:flex;gap:10px;padding:6px 12px;background:var(--card);border-bottom:1px solid var(--border);font-size:.66rem;font-weight:600;color:var(--texto2);overflow-x:auto;scrollbar-width:none;align-items:center}
 .legenda::-webkit-scrollbar{display:none}
 .leg-item{display:flex;align-items:center;gap:4px;white-space:nowrap}
-.leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
-.leg-dot.c{background:var(--colada)}.leg-dot.r{background:var(--repetida)}.leg-dot.f{background:var(--falta)}.leg-dot.b{background:linear-gradient(135deg,#ffe066,#c8a200)}
+.leg-box{width:22px;height:16px;border-radius:3px;border:2px solid transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:900}
+.leg-box.falta{background:var(--falta);border-color:#2a3d5a;color:var(--texto2)}
+.leg-box.colada{background:rgba(0,200,83,.18);border-color:var(--colada);color:var(--colada)}
+.leg-box.repetida{background:rgba(255,109,0,.18);border-color:var(--repetida);color:var(--repetida)}
+.leg-box.brilhante{background:rgba(200,162,0,.2);border-color:var(--brilhante);color:var(--brilhante)}
 .instrucao{padding:5px 12px;background:rgba(255,215,0,.04);border-bottom:1px solid var(--border);font-size:.67rem;color:var(--texto2);text-align:center}
 .instrucao strong{color:var(--amarelo)}
 
@@ -75,10 +86,10 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
 
 /* CARDS */
 .selecao-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:7px;overflow:hidden;transition:border-color .3s,box-shadow .3s}
-.selecao-card.completa{border-color:var(--colada);box-shadow:0 0 10px rgba(0,200,83,.18)}
-.selecao-progress{height:3px;background:var(--falta)}
-.selecao-progress-fill{height:100%;background:linear-gradient(90deg,var(--verde),var(--amarelo));transition:width .4s ease}
-.selecao-progress-fill.cheia{background:var(--colada)}
+.selecao-card.completa{border-color:var(--colada);box-shadow:0 0 12px rgba(0,200,83,.22)}
+.selecao-progress{height:4px;background:var(--falta);display:flex}
+.selecao-progress-col{height:100%;background:var(--colada);transition:width .4s ease}
+.selecao-progress-rep{height:100%;background:var(--repetida);transition:width .4s ease}
 .selecao-header{display:flex;align-items:center;gap:9px;padding:10px 12px;cursor:pointer;user-select:none}
 .sel-flag-img{width:38px;height:25px;object-fit:cover;border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.5);flex-shrink:0}
 .sel-flag-fwc{font-size:1.7rem;flex-shrink:0;line-height:1}
@@ -102,35 +113,89 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
 .acao-btn.todas-coladas{background:rgba(0,200,83,.15);color:var(--colada);border:1px solid rgba(0,200,83,.3)}
 .acao-btn.limpar{background:rgba(136,153,187,.1);color:var(--texto2);border:1px solid var(--border)}
 
-/* GRID */
-.figurinhas-grid{display:none;padding:8px;gap:4px;grid-template-columns:repeat(4,1fr)}
-.selecao-card.aberto .figurinhas-grid{display:grid}
-.figurinha{border-radius:8px;border:2px solid transparent;background:var(--falta);padding:6px 3px;text-align:center;cursor:pointer;transition:all .18s;position:relative;user-select:none;-webkit-user-select:none;min-height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
-.figurinha:active{transform:scale(.92)}
-.figurinha.fwc-especial{background:rgba(200,162,0,.12);border-color:rgba(200,162,0,.35)}
-.figurinha.fwc-especial .fig-num{color:var(--brilhante)}
-.figurinha.fwc-paises{background:rgba(74,144,217,.08);border-color:rgba(74,144,217,.22)}
-.figurinha.fwc-paises .fig-num{color:#5ba3e0}
-.figurinha.fwc-historia{background:rgba(160,90,210,.08);border-color:rgba(160,90,210,.22)}
-.figurinha.fwc-historia .fig-num{color:#a05ad2}
-.figurinha.brilhante{background:rgba(200,162,0,.08);border-color:rgba(200,162,0,.3)}
-.figurinha.brilhante .fig-num{color:var(--brilhante)}
-.figurinha.colada{background:rgba(0,200,83,.12)!important;border-color:var(--colada)!important}
-.figurinha.colada .fig-num{color:var(--colada)!important}.figurinha.colada .fig-status{color:var(--colada)}
-.figurinha.repetida{background:rgba(255,109,0,.12)!important;border-color:var(--repetida)!important}
-.figurinha.repetida .fig-num{color:var(--repetida)!important}.figurinha.repetida .fig-status{color:var(--repetida)}
-.brilhante-icon{position:absolute;top:2px;left:3px;font-size:.52rem;line-height:1}
-.fig-cat-icon{position:absolute;top:2px;right:3px;font-size:.5rem;line-height:1}
-.fig-num{font-family:'Bebas Neue',cursive;font-size:.88rem;letter-spacing:.5px;color:var(--texto2);line-height:1}
-.fig-status{font-size:.54rem;font-weight:700;letter-spacing:.2px;min-height:8px;line-height:1}
-.fig-qtd{position:absolute;top:-5px;right:-5px;background:var(--repetida);color:#fff;font-size:.54rem;font-weight:800;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center}
-.brilhante-aviso{font-size:.46rem;color:var(--brilhante);font-weight:700;display:none;line-height:1}
-.figurinha.fwc-especial .brilhante-aviso,.figurinha.brilhante .brilhante-aviso{display:block}
-.figurinha.colada .brilhante-aviso,.figurinha.repetida .brilhante-aviso{display:none}
+/* ══════════════════════════════════════════════════
+   GRID FIGURINHAS — SISTEMA DE CORES CLARO
+   Estado sempre tem prioridade sobre categoria.
 
+   FALTA     = fundo cinza-azul escuro, sem borda colorida
+   COLADA    = fundo verde suave, borda verde
+   REPETIDA  = fundo laranja suave, borda laranja
+   BRILHANTE = fundo dourado suave, borda dourada (SOMENTE quando falta)
+               quando colada/repetida = mesma cor do estado + ✨ no canto
+   ══════════════════════════════════════════════════ */
+.figurinhas-grid{display:none;padding:8px;gap:5px;grid-template-columns:repeat(4,1fr)}
+.selecao-card.aberto .figurinhas-grid{display:grid}
+
+.figurinha{
+  border-radius:9px;border:2px solid #2a3d5a;
+  background:var(--falta);
+  padding:6px 3px;text-align:center;cursor:pointer;
+  transition:background .15s,border-color .15s,transform .1s;
+  position:relative;user-select:none;-webkit-user-select:none;
+  min-height:52px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:2px;
+}
+.figurinha:active{transform:scale(.91)}
+
+/* BRILHANTE — sem cor especial, só o ✨ no canto indica que é brilhante */
+
+/* COLADA — verde */
+.figurinha.colada{
+  background:rgba(0,200,83,.14);
+  border-color:var(--colada);
+}
+.figurinha.colada .fig-num{color:var(--colada)}
+.figurinha.colada .fig-status{color:var(--colada)}
+
+/* REPETIDA — laranja */
+.figurinha.repetida{
+  background:rgba(255,109,0,.14);
+  border-color:var(--repetida);
+}
+.figurinha.repetida .fig-num{color:var(--repetida)}
+.figurinha.repetida .fig-status{color:var(--repetida)}
+
+/* FWC subcategorias — SOMENTE quando faltando */
+.figurinha.fwc-paises:not(.colada):not(.repetida){
+  background:rgba(74,144,217,.09);border-color:rgba(74,144,217,.3)
+}
+.figurinha.fwc-paises:not(.colada):not(.repetida) .fig-num{color:#5ba3e0}
+.figurinha.fwc-historia:not(.colada):not(.repetida){
+  background:rgba(160,90,210,.09);border-color:rgba(160,90,210,.3)
+}
+.figurinha.fwc-historia:not(.colada):not(.repetida) .fig-num{color:#a05ad2}
+
+/* ícone ✨ pequeno no canto — aparece em brilhantes */
+.fig-bri-icon{position:absolute;top:2px;left:3px;font-size:.5rem;line-height:1;opacity:.9}
+/* badge de categoria FWC no canto direito */
+.fig-cat-icon{position:absolute;top:2px;right:3px;font-size:.48rem;line-height:1;opacity:.7}
+
+/* número e status */
+.fig-num{font-family:'Bebas Neue',cursive;font-size:.9rem;letter-spacing:.5px;color:var(--texto2);line-height:1}
+.fig-status{font-size:.54rem;font-weight:700;letter-spacing:.2px;min-height:8px;line-height:1;color:var(--texto2)}
+
+/* badge quantidade repetida */
+.fig-qtd{position:absolute;top:-6px;right:-6px;background:var(--repetida);color:#fff;font-size:.55rem;font-weight:900;min-width:16px;height:16px;border-radius:8px;padding:0 3px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+
+/* aviso brilhante */
+.fig-bri-label{font-size:.44rem;color:var(--brilhante);font-weight:700;line-height:1;opacity:.85}
+
+/* FWC legend */
 .fwc-legend{display:flex;gap:10px;padding:6px 10px 8px;flex-wrap:wrap}
 .fwc-leg{display:flex;align-items:center;gap:4px;font-size:.63rem;font-weight:700;color:var(--texto2);white-space:nowrap}
 .fwc-leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+
+/* CONFETE */
+@keyframes confete-cair{
+  0%{transform:translateY(-20px) rotate(0deg);opacity:1}
+  100%{transform:translateY(80px) rotate(720deg);opacity:0}
+}
+.confete-wrap{position:absolute;top:0;left:0;width:100%;pointer-events:none;overflow:hidden;height:80px;z-index:10}
+.confete-piece{position:absolute;top:-10px;width:7px;height:7px;border-radius:2px;animation:confete-cair .9s ease-out forwards}
+
+/* TOQUE LONGO FEEDBACK */
+@keyframes pulsar{0%,100%{box-shadow:0 0 0 0 rgba(255,109,0,.5)}50%{box-shadow:0 0 0 5px rgba(255,109,0,.0)}}
+.figurinha.pressionando{animation:pulsar .4s ease-out}
 
 /* FABS */
 .fabs{position:fixed;bottom:calc(var(--tab-h)+8px);right:12px;display:flex;flex-direction:column;gap:6px;z-index:190;align-items:flex-end}
@@ -149,8 +214,7 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
 .modal-header{display:flex;align-items:flex-start;margin-bottom:12px;gap:10px}
 .modal-header-txt{flex:1}
 .modal h2{font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:2px;color:var(--amarelo)}
-.modal h2.gold{color:var(--brilhante)}
-.modal h2.danger{color:#e53935}
+.modal h2.gold{color:var(--brilhante)}.modal h2.danger{color:#e53935}
 .modal p{color:var(--texto2);font-size:.77rem;margin-top:2px}
 .modal-close{background:var(--card2);border:1px solid var(--border);color:var(--texto2);font-size:1rem;width:28px;height:28px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .modal-tabs{display:flex;gap:6px;margin-bottom:12px;border-bottom:1px solid var(--border);padding-bottom:8px}
@@ -159,7 +223,7 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
 .tab-content{display:none}.tab-content.ativo{display:block}
 .lista-itens{display:flex;flex-direction:column;gap:5px}
 .rep-item{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:8px 10px;display:flex;align-items:center;gap:8px}
-.rep-item.bri{border-color:rgba(200,162,0,.35);background:var(--brilhante-bg)}
+.rep-item.bri{border-color:rgba(200,162,0,.35);background:rgba(255,215,0,.05)}
 .rep-flag-img{width:28px;height:19px;object-fit:cover;border-radius:2px;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 .rep-info{flex:1;min-width:0}
 .rep-titulo{font-weight:700;font-size:.79rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -186,8 +250,9 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
 .big-pct-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px;text-align:center}
 .big-val{font-family:'Bebas Neue',cursive;font-size:3.8rem;color:var(--amarelo);line-height:1;text-shadow:0 0 30px rgba(255,215,0,.25)}
 .big-desc{font-size:.73rem;color:var(--texto2);font-weight:600;margin-top:3px}
-.big-bar{height:10px;background:var(--falta);border-radius:20px;margin-top:12px;overflow:hidden}
-.big-bar-fill{height:100%;background:linear-gradient(90deg,var(--verde),var(--amarelo));border-radius:20px;transition:width .6s ease}
+.big-bar{height:10px;background:var(--falta);border-radius:20px;margin-top:12px;overflow:hidden;display:flex}
+.big-bar-col{height:100%;background:var(--colada);transition:width .6s ease}
+.big-bar-rep{height:100%;background:var(--repetida);transition:width .6s ease}
 .big-sub{display:flex;justify-content:space-between;margin-top:8px;font-size:.67rem;font-weight:600}
 .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
 .stat-tile{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;position:relative;overflow:hidden}
@@ -205,26 +270,26 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
 .confed-nome{font-weight:700;font-size:.77rem;display:flex;align-items:center;gap:6px}
 .confed-flags{display:flex;gap:3px;align-items:center}
 .confed-pct{font-family:'Bebas Neue',cursive;font-size:.95rem;color:var(--amarelo)}
-.confed-bar{height:5px;background:var(--falta);border-radius:10px;overflow:hidden}
-.confed-bar-fill{height:100%;background:linear-gradient(90deg,var(--verde),var(--amarelo));border-radius:10px;transition:width .5s ease}
+.confed-bar{height:5px;background:var(--falta);border-radius:10px;overflow:hidden;display:flex}
+.confed-bar-col{height:100%;background:var(--colada);border-radius:10px 0 0 10px;transition:width .5s ease}
+.confed-bar-rep{height:100%;background:var(--repetida);transition:width .5s ease}
 .confed-sub{font-size:.63rem;color:var(--texto2);margin-top:4px}
 .completas-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:14px}
 .completa-item{display:inline-flex;align-items:center;gap:5px;font-size:.76rem;margin:3px 6px 3px 0}
 .completa-item img{width:20px;height:13px;object-fit:cover;border-radius:2px}
 
-/* CONFIGURAÇÕES */
+/* CONFIG */
 #pageConfig{padding:12px 12px 80px}
 .config-title{font-family:'Bebas Neue',cursive;font-size:1.25rem;letter-spacing:2px;color:var(--amarelo);margin-bottom:16px}
 .config-section{margin-bottom:20px}
 .config-section-title{font-family:'Bebas Neue',cursive;font-size:.76rem;letter-spacing:2.5px;color:var(--texto2);margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid var(--border)}
 .config-info{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:12px}
-.config-info p{font-size:.78rem;color:var(--texto2);line-height:1.5}
+.config-info p{font-size:.78rem;color:var(--texto2);line-height:1.6}
 .config-info p strong{color:var(--texto)}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
   <div class="header-top">
     <span class="header-logo">🏆</span>
@@ -242,10 +307,13 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
   </div>
 </header>
 
-<!-- ══ PÁGINA ÁLBUM ══ -->
+<!-- ══ ÁLBUM ══ -->
 <div id="pageAlbum" class="page ativo">
   <div class="controles">
-    <input class="busca" type="text" placeholder="🔍 Buscar seleção..." id="buscaInput">
+    <div class="controles-top">
+      <input class="busca" type="text" placeholder="🔍 Buscar seleção..." id="buscaInput">
+      <button class="btn-expand-all" id="btnExpandAll" title="Expandir/recolher todos os grupos">⊞</button>
+    </div>
     <div class="filtros-row" id="filtrosEstado">
       <button class="filtro-btn ativo" data-filtro="todos">Todas</button>
       <button class="filtro-btn" data-filtro="faltam">⚠️ Faltam</button>
@@ -274,10 +342,10 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
     </div>
   </div>
   <div class="legenda">
-    <div class="leg-item"><div class="leg-dot c"></div>Colada</div>
-    <div class="leg-item"><div class="leg-dot r"></div>Repetida</div>
-    <div class="leg-item"><div class="leg-dot f"></div>Falta</div>
-    <div class="leg-item"><div class="leg-dot b"></div>✨ Brilhante</div>
+    <div class="leg-item"><div class="leg-box falta">—</div>Falta</div>
+    <div class="leg-item"><div class="leg-box colada">✓</div>Colada</div>
+    <div class="leg-item"><div class="leg-box repetida">×</div>Repetida</div>
+    <div class="leg-item"><span style="font-size:.75rem">✨</span> = Brilhante (em qualquer cor)</div>
   </div>
   <div class="instrucao"><strong>Toque rápido</strong> = remove 1 &nbsp;·&nbsp; <strong>Toque longo</strong> = +1 repetida &nbsp;·&nbsp; <strong>Toque no grupo</strong> = minimizar</div>
   <main id="mainContent"></main>
@@ -287,17 +355,20 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
   </div>
 </div>
 
-<!-- ══ PÁGINA ESTATÍSTICAS ══ -->
+<!-- ══ ESTATÍSTICAS ══ -->
 <div id="pageStats" class="page">
   <div style="padding:12px 4px 0 4px">
     <div class="stats-title">📊 ESTATÍSTICAS</div>
     <div class="big-pct-card">
       <div class="big-val" id="sBigPct">0%</div>
       <div class="big-desc">do álbum — figurinhas que você tem (coladas + repetidas)</div>
-      <div class="big-bar"><div class="big-bar-fill" id="sBigBar" style="width:0%"></div></div>
+      <div class="big-bar">
+        <div class="big-bar-col" id="sBigBarCol" style="width:0%"></div>
+        <div class="big-bar-rep" id="sBigBarRep" style="width:0%"></div>
+      </div>
       <div class="big-sub">
-        <span style="color:var(--colada)">✅ Tenho <span id="sBigTenho">0</span></span>
-        <span style="color:var(--texto2)">de <span id="sBigTot">0</span> fig.</span>
+        <span style="color:var(--colada)">✅ <span id="sBigCol2">0</span> coladas</span>
+        <span style="color:var(--repetida)">🔄 <span id="sBigRep2">0</span> rep.</span>
         <span style="color:var(--amarelo)">⚠️ <span id="sBigFlt">0</span> faltam</span>
       </div>
     </div>
@@ -305,7 +376,7 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
     <div class="stat-grid">
       <div class="stat-tile verde"><div class="stv" id="sColadas">0</div><div class="stl">Coladas únicas</div><div class="sts" id="sColadasSub"></div></div>
       <div class="stat-tile amarelo"><div class="stv" id="sFaltam">0</div><div class="stl">Faltam</div><div class="sts" id="sFaltamSub"></div></div>
-      <div class="stat-tile laranja"><div class="stv" id="sRepetidas">0</div><div class="stl">Repetidas</div><div class="sts">cópias extras</div></div>
+      <div class="stat-tile laranja"><div class="stv" id="sRepetidas">0</div><div class="stl">Repetidas</div><div class="sts" id="sRepetidasSub">figurinhas distintas</div></div>
       <div class="stat-tile azul"><div class="stv" id="sTotal">0</div><div class="stl">Total Álbum</div><div class="sts">figurinhas</div></div>
     </div>
     <div class="sec-title">✨ BRILHANTES</div>
@@ -313,7 +384,7 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
       <div class="stat-tile verde"><div class="stv" id="sBriCol">0</div><div class="stl">Coladas</div></div>
       <div class="stat-tile amarelo"><div class="stv" id="sBriFlt">0</div><div class="stl">Faltam</div></div>
       <div class="stat-tile laranja"><div class="stv" id="sBriRep">0</div><div class="stl">Repetidas</div></div>
-      <div class="stat-tile gold"><div class="stv" id="sBriTot">0</div><div class="stl">Total Brilhantes</div></div>
+      <div class="stat-tile gold"><div class="stv" id="sBriTot">0</div><div class="stl">Total</div></div>
     </div>
     <div class="sec-title">POR GRUPO</div>
     <div class="confed-list" id="sGrupos"></div>
@@ -322,10 +393,9 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
   </div>
 </div>
 
-<!-- ══ PÁGINA CONFIGURAÇÕES ══ -->
+<!-- ══ CONFIG ══ -->
 <div id="pageConfig" class="page">
   <div class="config-title">⚙️ CONFIGURAÇÕES</div>
-
   <div class="config-section">
     <div class="config-section-title">SOBRE O ÁLBUM</div>
     <div class="config-info">
@@ -334,14 +404,11 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
       Dados salvos automaticamente no seu aparelho.</p>
     </div>
   </div>
-
   <div class="config-section">
     <div class="config-section-title">🗑️ ZERAR ÁLBUM</div>
     <div class="zerar-box">
-      <p class="zerar-aviso">
-        Isso vai apagar <strong>TODO o progresso</strong> do álbum — todas as figurinhas coladas, repetidas e contagens voltam a zero.<br><br>
-        Use isso se quiser <strong>começar do zero</strong>. Esta ação <strong>não pode ser desfeita</strong>.
-      </p>
+      <p class="zerar-aviso">Isso vai apagar <strong>TODO o progresso</strong> — figurinhas coladas, repetidas e contagens voltam a zero.<br><br>
+      Use se quiser <strong>começar do zero</strong>. Esta ação <strong>não pode ser desfeita</strong>.</p>
       <button class="btn-zerar-confirm" id="btnZerarConfirm">🗑️ APAGAR TUDO E COMEÇAR DO ZERO</button>
     </div>
   </div>
@@ -387,47 +454,46 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
   </div>
 </div>
 
-<!-- MODAL CONFIRMAÇÃO ZERAR -->
+<!-- MODAL ZERAR -->
 <div class="modal-overlay" id="modalZerar">
   <div class="modal danger-top">
     <div class="modal-header">
-      <div class="modal-header-txt">
-        <h2 class="danger">⚠️ CONFIRMAR</h2>
-        <p>Tem certeza absoluta? Isso apaga tudo e não tem volta.</p>
-      </div>
+      <div class="modal-header-txt"><h2 class="danger">⚠️ TEM CERTEZA?</h2><p>Apaga tudo e não tem como desfazer.</p></div>
       <button class="modal-close" id="closeZerar">✕</button>
     </div>
     <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
-      <button id="btnZerarSim" style="background:linear-gradient(135deg,#c62828,#e53935);color:#fff;font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:2px;padding:13px;border-radius:10px;border:none;cursor:pointer;box-shadow:0 3px 14px rgba(229,57,53,.35)">
-        ✅ SIM, APAGAR TUDO
-      </button>
-      <button id="btnZerarNao" style="background:var(--card2);color:var(--texto2);font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:2px;padding:13px;border-radius:10px;border:1px solid var(--border);cursor:pointer">
-        ✕ CANCELAR
-      </button>
+      <button id="btnZerarSim" style="background:linear-gradient(135deg,#c62828,#e53935);color:#fff;font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:2px;padding:13px;border-radius:10px;border:none;cursor:pointer;box-shadow:0 3px 14px rgba(229,57,53,.35)">✅ SIM, APAGAR TUDO</button>
+      <button id="btnZerarNao" style="background:var(--card2);color:var(--texto2);font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:2px;padding:13px;border-radius:10px;border:1px solid var(--border);cursor:pointer">✕ CANCELAR</button>
     </div>
   </div>
 </div>
 
 <script>
 // ══════════════════════════════════════════════════
-// BANDEIRAS — flagcdn.com (código ISO 2 letras)
+// BANDEIRAS
 // ══════════════════════════════════════════════════
 const FLAG_ISO={
-  MEX:'mx',RSA:'za',KOR:'kr',CZE:'cz',
-  CAN:'ca',BIH:'ba',QAT:'qa',SUI:'ch',
-  BRA:'br',MAR:'ma',HAI:'ht',SCO:'gb-sct',
-  USA:'us',PAR:'py',AUS:'au',TUR:'tr',
-  GER:'de',CUW:'cw',CIV:'ci',ECU:'ec',
-  NED:'nl',JPN:'jp',SWE:'se',TUN:'tn',
-  BEL:'be',EGY:'eg',IRN:'ir',NZL:'nz',
-  ESP:'es',CPV:'cv',KSA:'sa',URU:'uy',
-  FRA:'fr',SEN:'sn',IRQ:'iq',NOR:'no',
-  ARG:'ar',ALG:'dz',AUT:'at',JOR:'jo',
-  POR:'pt',COD:'cd',UZB:'uz',COL:'co',
-  ENG:'gb-eng',CRO:'hr',GHA:'gh',PAN:'pa',
+  MEX:'mx',RSA:'za',KOR:'kr',CZE:'cz',CAN:'ca',BIH:'ba',QAT:'qa',SUI:'ch',
+  BRA:'br',MAR:'ma',HAI:'ht',SCO:'gb-sct',USA:'us',PAR:'py',AUS:'au',TUR:'tr',
+  GER:'de',CUW:'cw',CIV:'ci',ECU:'ec',NED:'nl',JPN:'jp',SWE:'se',TUN:'tn',
+  BEL:'be',EGY:'eg',IRN:'ir',NZL:'nz',ESP:'es',CPV:'cv',KSA:'sa',URU:'uy',
+  FRA:'fr',SEN:'sn',IRQ:'iq',NOR:'no',ARG:'ar',ALG:'dz',AUT:'at',JOR:'jo',
+  POR:'pt',COD:'cd',UZB:'uz',COL:'co',ENG:'gb-eng',CRO:'hr',GHA:'gh',PAN:'pa',
 };
 const flagUrl=sid=>'https://flagcdn.com/w40/'+FLAG_ISO[sid]+'.png';
-const flagImg=(sid,w,h)=>'<img src="'+flagUrl(sid)+'" width="'+w+'" height="'+h+'" style="object-fit:cover;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,.4)" alt="'+sid+'" onerror="this.style.display=\'none\'">';
+// Fallback: se imagem falhar, usa emoji
+const FLAG_EMOJI={
+  MEX:'🇲🇽',RSA:'🇿🇦',KOR:'🇰🇷',CZE:'🇨🇿',CAN:'🇨🇦',BIH:'🇧🇦',QAT:'🇶🇦',SUI:'🇨🇭',
+  BRA:'🇧🇷',MAR:'🇲🇦',HAI:'🇭🇹',SCO:'🏴󠁧󠁢󠁳󠁣󠁴󠁿',USA:'🇺🇸',PAR:'🇵🇾',AUS:'🇦🇺',TUR:'🇹🇷',
+  GER:'🇩🇪',CUW:'🇨🇼',CIV:'🇨🇮',ECU:'🇪🇨',NED:'🇳🇱',JPN:'🇯🇵',SWE:'🇸🇪',TUN:'🇹🇳',
+  BEL:'🇧🇪',EGY:'🇪🇬',IRN:'🇮🇷',NZL:'🇳🇿',ESP:'🇪🇸',CPV:'🇨🇻',KSA:'🇸🇦',URU:'🇺🇾',
+  FRA:'🇫🇷',SEN:'🇸🇳',IRQ:'🇮🇶',NOR:'🇳🇴',ARG:'🇦🇷',ALG:'🇩🇿',AUT:'🇦🇹',JOR:'🇯🇴',
+  POR:'🇵🇹',COD:'🇨🇩',UZB:'🇺🇿',COL:'🇨🇴',ENG:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',CRO:'🇭🇷',GHA:'🇬🇭',PAN:'🇵🇦',
+};
+function flagImgEl(sid,w,h,cls){
+  return '<img src="'+flagUrl(sid)+'" width="'+w+'" height="'+h+'"'+(cls?' class="'+cls+'"':'')+
+    ' alt="'+sid+'" onerror="this.outerHTML=\'<span style=\\\'font-size:1.5rem;line-height:1\\\'>'+FLAG_EMOJI[sid]+'</span>\'">';
+}
 
 // ══════════════════════════════════════════════════
 // FWC — 20 figurinhas
@@ -444,7 +510,7 @@ for(let i=0;i<20;i++){
 const FWC={id:'FWC',nome:'Copa do Mundo 2026',grupo:'FWC',ord:0,j:FWC_FIGS};
 
 // ══════════════════════════════════════════════════
-// SELEÇÕES — grupos da Copa 2026
+// SELEÇÕES
 // ══════════════════════════════════════════════════
 const SELS_DEF=[
   {id:'MEX',nome:'México',          grupo:'A',ord:1},
@@ -542,39 +608,33 @@ const REPS_INI={
 // ESTADO
 // ══════════════════════════════════════════════════
 let estado={},qtd={},filtro='todos',ordem='album-asc',minimizados=new Set();
+let todosExpandidos=false; // toggle expandir/recolher todos
 const K=(sid,i)=>sid+'-'+i;
-const STORAGE_KEY='copa26v6';
+const SK='copa26v6';
 
 function salvar(){
   try{
-    localStorage.setItem(STORAGE_KEY+'_e',JSON.stringify(estado));
-    localStorage.setItem(STORAGE_KEY+'_q',JSON.stringify(qtd));
-    localStorage.setItem(STORAGE_KEY+'_min',JSON.stringify([...minimizados]));
+    localStorage.setItem(SK+'_e',JSON.stringify(estado));
+    localStorage.setItem(SK+'_q',JSON.stringify(qtd));
+    localStorage.setItem(SK+'_min',JSON.stringify([...minimizados]));
   }catch(e){}
 }
-
 function carregar(){
   try{
-    const e=localStorage.getItem(STORAGE_KEY+'_e');
+    const e=localStorage.getItem(SK+'_e');
     if(e){
       estado=JSON.parse(e);
-      qtd=JSON.parse(localStorage.getItem(STORAGE_KEY+'_q')||'{}');
-      minimizados=new Set(JSON.parse(localStorage.getItem(STORAGE_KEY+'_min')||'[]'));
+      qtd=JSON.parse(localStorage.getItem(SK+'_q')||'{}');
+      minimizados=new Set(JSON.parse(localStorage.getItem(SK+'_min')||'[]'));
       return;
     }
-    // migração versões anteriores
     for(const k of['copa26v5_e','copa26v4_e','copa26v3_e']){
       const v=localStorage.getItem(k);
-      if(v){
-        estado=JSON.parse(v);
-        qtd=JSON.parse(localStorage.getItem(k.replace('_e','_q'))||'{}');
-        salvar();return;
-      }
+      if(v){estado=JSON.parse(v);qtd=JSON.parse(localStorage.getItem(k.replace('_e','_q'))||'{}');salvar();return;}
     }
   }catch(ex){}
   importarDados();
 }
-
 function importarDados(){
   TODAS.forEach(s=>{
     const isFWC=s.id==='FWC';
@@ -583,36 +643,30 @@ function importarDados(){
     s.j.forEach((_,i)=>{
       const k=K(s.id,i);
       if(rSet.has(i)){estado[k]='repetida';qtd[k]=1;}
-      else if(fSet.has(i)){/* falta */}
+      else if(fSet.has(i)){}
       else{estado[k]='colada';}
     });
   });
   salvar();
 }
-
 function zerarTudo(){
   estado={};qtd={};minimizados=new Set();
-  // limpar todas as chaves do storage
-  ['_e','_q','_min'].forEach(s=>localStorage.removeItem(STORAGE_KEY+s));
-  // limpar versões antigas também
-  ['copa26v5','copa26v4','copa26v3'].forEach(k=>{
-    localStorage.removeItem(k+'_e');
-    localStorage.removeItem(k+'_q');
-  });
-  salvar();
-  renderTudo();
-  atualizarContadores();
+  ['_e','_q','_min'].forEach(s=>localStorage.removeItem(SK+s));
+  ['copa26v5','copa26v4','copa26v3'].forEach(k=>{localStorage.removeItem(k+'_e');localStorage.removeItem(k+'_q');});
+  salvar();renderTudo();atualizarContadores();
 }
 
 // ══════════════════════════════════════════════════
 // HELPERS
 // ══════════════════════════════════════════════════
 function eBri(sid,idx){return sid==='FWC'?idx<=4:idx===0;}
+
 function stats(s){
   let col=0,rep=0;
   s.j.forEach((_,i)=>{const st=estado[K(s.id,i)];if(st==='colada')col++;else if(st==='repetida')rep++;});
   return{col,rep,flt:s.j.length-col-rep,tenho:col+rep,tot:s.j.length};
 }
+
 function statsGlobal(){
   let tf=0,tc=0,tr=0,bf=0,bc=0,br=0;
   TODAS.forEach(s=>{
@@ -625,6 +679,40 @@ function statsGlobal(){
     });
   });
   return{tf,tc,tr,tenho:tc+tr,tFlt:tf-tc-tr,bc,br,bf,bTot:53};
+}
+
+// ══════════════════════════════════════════════════
+// VIBRAÇÃO
+// ══════════════════════════════════════════════════
+function vibrar(tipo){
+  if(!navigator.vibrate)return;
+  if(tipo==='colada') navigator.vibrate(25);
+  else if(tipo==='repetida') navigator.vibrate([30,40,30]);
+  else if(tipo==='remove') navigator.vibrate(15);
+  else if(tipo==='completa') navigator.vibrate([60,30,60,30,120]);
+}
+
+// ══════════════════════════════════════════════════
+// CONFETE ao completar seleção
+// ══════════════════════════════════════════════════
+const CONFETE_CORES=['#FFD700','#00c853','#ff6d00','#4a90d9','#e040fb','#fff'];
+function dispararConfete(cardEl){
+  const wrap=document.createElement('div');
+  wrap.className='confete-wrap';
+  for(let i=0;i<18;i++){
+    const p=document.createElement('div');
+    p.className='confete-piece';
+    p.style.cssText='left:'+(5+Math.random()*90)+'%;'+
+      'background:'+CONFETE_CORES[Math.floor(Math.random()*CONFETE_CORES.length)]+';'+
+      'animation-delay:'+(Math.random()*0.4)+'s;'+
+      'animation-duration:'+(0.7+Math.random()*0.5)+'s;'+
+      'width:'+(5+Math.random()*5)+'px;height:'+(5+Math.random()*5)+'px;'+
+      'border-radius:'+(Math.random()>0.5?'50%':'2px')+';';
+    wrap.appendChild(p);
+  }
+  cardEl.style.position='relative';
+  cardEl.insertBefore(wrap,cardEl.firstChild);
+  setTimeout(()=>wrap.remove(),1500);
 }
 
 // ══════════════════════════════════════════════════
@@ -665,7 +753,6 @@ function renderTudo(){
     let gUsados=[...new Set(lista.map(s=>s.grupo))];
     const gOrd=ordem==='album-desc'?[...GRUPOS_ORD].reverse():GRUPOS_ORD;
     gUsados=gOrd.filter(g=>gUsados.includes(g));
-
     gUsados.forEach(gr=>{
       const sGr=lista.filter(s=>s.grupo===gr);if(!sGr.length)return;
       let gCol=0,gFlt=0,gRep=0,gTot=0,gTenho=0;
@@ -674,14 +761,12 @@ function renderTudo(){
       const mini=minimizados.has(gr);
       const flagsHtml=gr==='FWC'?'':sGr.map(s=>'<img src="'+flagUrl(s.id)+'" width="22" height="15" style="object-fit:cover;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,.4)" alt="'+s.id+'" onerror="this.style.display=\'none\'">').join('');
       const label=gr==='FWC'?'🏆 ESPECIAIS FWC':'⚽ GRUPO '+gr;
-
       html+='<div class="grupo-section'+(mini?' minimizado':'')+'" id="grupo-'+gr+'">';
       html+='<div class="grupo-header" data-grupo="'+gr+'">'+
         '<span class="grupo-header-txt">'+label+'</span>'+
         (flagsHtml?'<div class="grupo-flags-img">'+flagsHtml+'</div>':'')+
         '<span class="grupo-mini-pct">'+gPct+'%</span>'+
-        '<span class="grupo-chevron">▼</span>'+
-      '</div>';
+        '<span class="grupo-chevron">▼</span></div>';
       html+='<div class="grupo-body">';
       sGr.forEach(s=>{html+=buildCard(s,abertos,q);});
       html+='</div></div>';
@@ -689,43 +774,52 @@ function renderTudo(){
   } else {
     lista.forEach(s=>{html+=buildCard(s,abertos,q);});
   }
-
   main.innerHTML=html;
   atualizarContadores();
 }
 
 function buildCard(s,abertos,q){
   const{col,rep,flt,tenho,tot}=stats(s);
-  const pct=Math.round(tenho/tot*100);
-  const ok=flt===0&&rep===0&&col===tot;
+  const pctCol=Math.round(col/tot*100);
+  const pctRep=Math.round(rep/tot*100);
+  // BUG #1 CORRIGIDO: completa = zero faltantes, independente de repetidas
+  const ok=flt===0;
   const aberto=abertos.has(s.id);
-  const miniStats=ok?'<span class="completa-badge">🏆 Completa!</span>':
+
+  const miniStats=ok&&rep===0?'<span class="completa-badge">🏆 Completa!</span>':
+    ok?'<span class="completa-badge" style="border-color:rgba(0,200,83,.2)">✅ Todas coladas!</span>':
     ((tenho>0?'<span class="mini-badge c">✅'+tenho+'</span>':'')
     +(rep>0?'<span class="mini-badge r">🔄'+rep+'</span>':'')
     +(flt>0?'<span class="mini-badge f">⚠️'+flt+'</span>':''));
+
   const grupoLabel=s.grupo==='FWC'?'🏆 Especiais':'Grupo '+s.grupo;
   const flagEl=s.id==='FWC'
     ?'<span class="sel-flag-fwc">🏆</span>'
-    :'<img class="sel-flag-img" src="'+flagUrl(s.id)+'" width="38" height="25" alt="'+s.nome+'" onerror="this.style.display=\'none\'">';
+    :flagImgEl(s.id,38,25,'sel-flag-img');
+
   const fwcLeg=s.id==='FWC'?'<div class="fwc-legend">'+
     '<div class="fwc-leg"><div class="fwc-leg-dot" style="background:var(--brilhante)"></div>✨ Especiais (00–04)</div>'+
     '<div class="fwc-leg"><div class="fwc-leg-dot" style="background:#5ba3e0"></div>🌍 Países (05–08)</div>'+
     '<div class="fwc-leg"><div class="fwc-leg-dot" style="background:#a05ad2"></div>📜 História (09–19)</div>'+
     '</div>':'';
+
   return '<div class="selecao-card'+(ok?' completa':'')+(aberto?' aberto':'')+'" id="card-'+s.id+'">' +
-    '<div class="selecao-progress"><div class="selecao-progress-fill'+(ok?' cheia':'')+'" style="width:'+pct+'%"></div></div>' +
+    '<div class="selecao-progress">'+
+      '<div class="selecao-progress-col" style="width:'+pctCol+'%"></div>'+
+      '<div class="selecao-progress-rep" style="width:'+pctRep+'%"></div>'+
+    '</div>'+
     '<div class="selecao-header" data-sid="'+s.id+'">' +
       flagEl+
-      '<div class="sel-info"><div class="sel-nome">'+s.nome+'</div><div class="sel-meta">'+s.id+' · '+grupoLabel+'</div></div>' +
-      '<div class="sel-mini-stats">'+miniStats+'</div>' +
-      '<span class="chevron">▼</span>' +
-    '</div>' +
-    '<div class="acoes-massa">' +
-      '<button class="acao-btn todas-coladas" data-acao="todas" data-sid="'+s.id+'">✅ Todas coladas</button>' +
-      '<button class="acao-btn limpar" data-acao="limpar" data-sid="'+s.id+'">🗑️ Limpar</button>' +
-    '</div>' +
+      '<div class="sel-info"><div class="sel-nome">'+s.nome+'</div><div class="sel-meta">'+s.id+' · '+grupoLabel+'</div></div>'+
+      '<div class="sel-mini-stats">'+miniStats+'</div>'+
+      '<span class="chevron">▼</span>'+
+    '</div>'+
+    '<div class="acoes-massa">'+
+      '<button class="acao-btn todas-coladas" data-acao="todas" data-sid="'+s.id+'">✅ Todas coladas</button>'+
+      '<button class="acao-btn limpar" data-acao="limpar" data-sid="'+s.id+'">🗑️ Limpar</button>'+
+    '</div>'+
     fwcLeg+
-    '<div class="figurinhas-grid" id="grid-'+s.id+'">'+renderGridHTML(s,q)+'</div>' +
+    '<div class="figurinhas-grid" id="grid-'+s.id+'">'+renderGridHTML(s,q)+'</div>'+
   '</div>';
 }
 
@@ -736,51 +830,99 @@ function renderFig(sid,idx,fig,q){
   const hl=q&&sid.toLowerCase().includes(q)?'outline:2px solid var(--amarelo);':'';
   const stTxt=st==='colada'?'✅':st==='repetida'?'×'+n:'';
   const qtdB=(st==='repetida'&&n>1)?'<div class="fig-qtd">'+n+'</div>':'';
+
+  // SISTEMA DE CLASSES — estado define a cor, brilhante só adiciona o ✨
   let classes='figurinha';
-  if(st)classes+=' '+st;
-  else if(cat==='especial')classes+=' fwc-especial';
-  else if(cat==='paises')  classes+=' fwc-paises';
-  else if(cat==='historia')classes+=' fwc-historia';
-  else if(cat==='brilhante')classes+=' brilhante';
-  const briIcon=(cat==='especial'||cat==='brilhante')?'<div class="brilhante-icon">✨</div>':'';
-  const catIcon=cat==='paises'?'<div class="fig-cat-icon">🌍</div>':cat==='historia'?'<div class="fig-cat-icon">📜</div>':'';
+  if(st==='colada'){
+    classes+=' colada';
+  } else if(st==='repetida'){
+    classes+=' repetida';
+  } else {
+    // faltando — subcategorias FWC têm cor própria, brilhante fica cinza normal
+    if(cat==='paises')   classes+=' fwc-paises';
+    else if(cat==='historia') classes+=' fwc-historia';
+    // brilhante, especial, normal: ficam cinza padrão
+  }
+
+  // ícone ✨ aparece sempre para brilhantes, independente do estado
+  const briIcon=bri?'<div class="fig-bri-icon">✨</div>':'';
+  // ícone de categoria FWC (só quando falta)
+  const catIcon=!st&&cat==='paises'?'<div class="fig-cat-icon">🌍</div>':
+                !st&&cat==='historia'?'<div class="fig-cat-icon">📜</div>':'';
+
+  // label brilhante só quando faltando
+  const briLabel=bri&&!st?'<div class="fig-bri-label">brilhante</div>':'';
+
   return '<div class="'+classes+'" style="'+hl+'" id="fig-'+sid+'-'+idx+'" data-sid="'+sid+'" data-idx="'+idx+'">' +
     qtdB+briIcon+catIcon+
     '<div class="fig-num">'+fig.num+'</div>'+
     '<div class="fig-status">'+stTxt+'</div>'+
-    '<div class="brilhante-aviso">✨ bri</div>'+
+    briLabel+
   '</div>';
 }
 
 // ══════════════════════════════════════════════════
-// INTERAÇÃO FIGURINHAS
+// INTERAÇÃO
 // ══════════════════════════════════════════════════
 let longT=null,longOk=false;
-function iniciarLongo(sid,idx){longOk=false;longT=setTimeout(()=>{longOk=true;executarLongo(sid,idx);},480);}
-function cancelarLongo(){if(longT){clearTimeout(longT);longT=null;}}
+
+function iniciarLongo(sid,idx){
+  longOk=false;
+  // feedback visual de "pressionando"
+  const el=document.getElementById('fig-'+sid+'-'+idx);
+  if(el) el.classList.add('pressionando');
+  longT=setTimeout(()=>{
+    longOk=true;
+    executarLongo(sid,idx);
+    if(el) el.classList.remove('pressionando');
+  },480);
+}
+function cancelarLongo(){
+  if(longT){clearTimeout(longT);longT=null;}
+  // remove feedback visual de qualquer figurinha pressionando
+  document.querySelectorAll('.figurinha.pressionando').forEach(el=>el.classList.remove('pressionando'));
+}
+
 function executarLongo(sid,idx){
-  // Toque longo: sempre adiciona +1 repetida
   const k=K(sid,idx);
-  if(estado[k]==='repetida'){ qtd[k]=(qtd[k]||1)+1; }
-  else{ estado[k]='repetida'; qtd[k]=1; }
+  if(estado[k]==='repetida'){qtd[k]=(qtd[k]||1)+1;}
+  else{estado[k]='repetida';qtd[k]=1;}
+  vibrar('repetida');
   salvar();atualizarFig(sid,idx);atualizarHeaderCard(sid);atualizarContadores();
 }
+
 function executarToque(sid,idx){
   if(longOk){longOk=false;return;}
-  // Toque rápido: sempre remove 1
-  // repetida ×3 → ×2 → ×1 → colada → falta
   const k=K(sid,idx),at=estado[k]||'';
+  const{flt:fltAntes}=stats(TODAS.find(x=>x.id===sid));
+
   if(at==='repetida'){
     const n=qtd[k]||1;
-    if(n>1){ qtd[k]=n-1; }          // diminui 1 repetida
-    else{ estado[k]='colada'; delete qtd[k]; } // última repetida → volta colada
+    if(n>1){qtd[k]=n-1;vibrar('remove');}
+    else{estado[k]='colada';delete qtd[k];vibrar('remove');}
   } else if(at==='colada'){
-    delete estado[k]; delete qtd[k]; // colada → falta
+    delete estado[k];delete qtd[k];vibrar('remove');
   } else {
-    estado[k]='colada';              // falta → colada
+    estado[k]='colada';vibrar('colada');
   }
-  salvar();atualizarFig(sid,idx);atualizarHeaderCard(sid);atualizarContadores();
+
+  salvar();
+  atualizarFig(sid,idx);
+  atualizarHeaderCard(sid);
+  atualizarContadores();
+
+  // Verificar se acabou de completar a seleção (faltava 1 e agora é 0)
+  const s=TODAS.find(x=>x.id===sid);
+  if(s){
+    const{flt:fltDepois}=stats(s);
+    if(fltAntes===1&&fltDepois===0){
+      vibrar('completa');
+      const card=document.getElementById('card-'+sid);
+      if(card)dispararConfete(card);
+    }
+  }
 }
+
 function atualizarFig(sid,idx){
   const el=document.getElementById('fig-'+sid+'-'+idx);if(!el)return;
   const s=TODAS.find(x=>x.id===sid);if(!s)return;
@@ -788,19 +930,26 @@ function atualizarFig(sid,idx){
   const tmp=document.createElement('div');tmp.innerHTML=renderFig(sid,idx,s.j[idx],q);
   el.replaceWith(tmp.firstChild);
 }
+
 function atualizarHeaderCard(sid){
   const s=TODAS.find(x=>x.id===sid),card=document.getElementById('card-'+sid);
   if(!s||!card)return;
-  const{col,rep,flt,tenho,tot}=stats(s),pct=Math.round(tenho/tot*100),ok=flt===0&&rep===0&&col===tot;
-  const fill=card.querySelector('.selecao-progress-fill');
-  if(fill){fill.style.width=pct+'%';fill.classList.toggle('cheia',ok);}
+  const{col,rep,flt,tenho,tot}=stats(s);
+  const pctCol=Math.round(col/tot*100),pctRep=Math.round(rep/tot*100);
+  const ok=flt===0;
+  const fillCol=card.querySelector('.selecao-progress-col');
+  const fillRep=card.querySelector('.selecao-progress-rep');
+  if(fillCol)fillCol.style.width=pctCol+'%';
+  if(fillRep)fillRep.style.width=pctRep+'%';
   card.classList.toggle('completa',ok);
   const mini=card.querySelector('.sel-mini-stats');
-  if(mini)mini.innerHTML=ok?'<span class="completa-badge">🏆 Completa!</span>':
+  if(mini)mini.innerHTML=ok&&rep===0?'<span class="completa-badge">🏆 Completa!</span>':
+    ok?'<span class="completa-badge" style="border-color:rgba(0,200,83,.2)">✅ Todas coladas!</span>':
     ((tenho>0?'<span class="mini-badge c">✅'+tenho+'</span>':'')
     +(rep>0?'<span class="mini-badge r">🔄'+rep+'</span>':'')
     +(flt>0?'<span class="mini-badge f">⚠️'+flt+'</span>':''));
 }
+
 function atualizarContadores(){
   const g=statsGlobal();
   document.getElementById('totalTenho').textContent=g.tenho;
@@ -819,8 +968,7 @@ const mainEl=document.getElementById('mainContent');
 mainEl.addEventListener('click',e=>{
   const gh=e.target.closest('.grupo-header');
   if(gh){
-    const gr=gh.dataset.grupo;
-    const sec=document.getElementById('grupo-'+gr);
+    const gr=gh.dataset.grupo,sec=document.getElementById('grupo-'+gr);
     if(sec){
       if(minimizados.has(gr)){minimizados.delete(gr);sec.classList.remove('minimizado');}
       else{minimizados.add(gr);sec.classList.add('minimizado');}
@@ -834,8 +982,8 @@ mainEl.addEventListener('click',e=>{
   if(a){
     e.stopPropagation();
     const sid=a.dataset.sid,s=TODAS.find(x=>x.id===sid);if(!s)return;
-    if(a.dataset.acao==='todas')s.j.forEach((_,i)=>{const k=K(sid,i);estado[k]='colada';delete qtd[k];});
-    else s.j.forEach((_,i)=>{const k=K(sid,i);delete estado[k];delete qtd[k];});
+    if(a.dataset.acao==='todas'){s.j.forEach((_,i)=>{const k=K(sid,i);estado[k]='colada';delete qtd[k];});}
+    else{s.j.forEach((_,i)=>{const k=K(sid,i);delete estado[k];delete qtd[k];});}
     salvar();
     const grid=document.getElementById('grid-'+sid);
     if(grid){const q=document.getElementById('buscaInput').value.toLowerCase().trim();grid.innerHTML=renderGridHTML(s,q);}
@@ -865,6 +1013,27 @@ document.getElementById('filtrosOrdem').addEventListener('click',e=>{
 document.getElementById('buscaInput').addEventListener('input',renderTudo);
 
 // ══════════════════════════════════════════════════
+// EXPANDIR / RECOLHER TODOS
+// ══════════════════════════════════════════════════
+document.getElementById('btnExpandAll').addEventListener('click',()=>{
+  todosExpandidos=!todosExpandidos;
+  if(todosExpandidos){
+    // Expandir todos: limpa minimizados
+    minimizados.clear();
+    document.querySelectorAll('.grupo-section').forEach(sec=>sec.classList.remove('minimizado'));
+    document.getElementById('btnExpandAll').textContent='⊟';
+    document.getElementById('btnExpandAll').title='Recolher todos os grupos';
+  } else {
+    // Recolher todos
+    GRUPOS_ORD.forEach(g=>minimizados.add(g));
+    document.querySelectorAll('.grupo-section').forEach(sec=>sec.classList.add('minimizado'));
+    document.getElementById('btnExpandAll').textContent='⊞';
+    document.getElementById('btnExpandAll').title='Expandir todos os grupos';
+  }
+  salvar();
+});
+
+// ══════════════════════════════════════════════════
 // TABS NAVEGAÇÃO
 // ══════════════════════════════════════════════════
 document.querySelectorAll('.bottom-tab').forEach(tab=>{
@@ -878,15 +1047,12 @@ document.querySelectorAll('.bottom-tab').forEach(tab=>{
 });
 
 // ══════════════════════════════════════════════════
-// ZERAR — botão na página Config abre confirmação
+// ZERAR
 // ══════════════════════════════════════════════════
-document.getElementById('btnZerarConfirm').addEventListener('click',()=>{
-  document.getElementById('modalZerar').classList.add('aberto');
-});
+document.getElementById('btnZerarConfirm').addEventListener('click',()=>document.getElementById('modalZerar').classList.add('aberto'));
 document.getElementById('btnZerarSim').addEventListener('click',()=>{
   document.getElementById('modalZerar').classList.remove('aberto');
   zerarTudo();
-  // Voltar pra aba álbum
   document.querySelectorAll('.bottom-tab').forEach(t=>t.classList.remove('ativo'));
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('ativo'));
   document.querySelector('[data-page="pageAlbum"]').classList.add('ativo');
@@ -903,10 +1069,13 @@ document.getElementById('modalZerar').addEventListener('click',e=>{if(e.target==
 function renderStats(g){
   if(!g)g=statsGlobal();
   const pct=(g.tenho/g.tf*100).toFixed(1);
+  const pctCol=(g.tc/g.tf*100).toFixed(1);
+  const pctRep=(g.tr/g.tf*100).toFixed(1);
   document.getElementById('sBigPct').textContent=pct+'%';
-  document.getElementById('sBigBar').style.width=pct+'%';
-  document.getElementById('sBigTenho').textContent=g.tenho;
-  document.getElementById('sBigTot').textContent=g.tf;
+  document.getElementById('sBigBarCol').style.width=pctCol+'%';
+  document.getElementById('sBigBarRep').style.width=pctRep+'%';
+  document.getElementById('sBigCol2').textContent=g.tc;
+  document.getElementById('sBigRep2').textContent=g.tr;
   document.getElementById('sBigFlt').textContent=g.tFlt;
   document.getElementById('sColadas').textContent=g.tc;
   document.getElementById('sColadasSub').textContent='de '+g.tf+' figurinhas';
@@ -925,20 +1094,23 @@ function renderStats(g){
     let col=0,flt=0,rep=0,tot=0,tenho=0;
     sels.forEach(s=>{const st=stats(s);col+=st.col;flt+=st.flt;rep+=st.rep;tot+=st.tot;tenho+=st.tenho;});
     const p=tot>0?(tenho/tot*100).toFixed(0):0;
+    const pCol=tot>0?(col/tot*100).toFixed(0):0;
+    const pRep=tot>0?(rep/tot*100).toFixed(0):0;
     const label=gr==='FWC'?'🏆 Especiais FWC':'⚽ Grupo '+gr;
     const fHtml=sels.filter(s=>s.id!=='FWC').map(s=>'<img src="'+flagUrl(s.id)+'" width="18" height="12" style="object-fit:cover;border-radius:2px" alt="'+s.id+'" onerror="this.style.display=\'none\'">').join('');
     gh+='<div class="confed-item">'+
       '<div class="confed-top"><span class="confed-nome">'+label+' <span class="confed-flags">'+fHtml+'</span></span><span class="confed-pct">'+p+'%</span></div>'+
-      '<div class="confed-bar"><div class="confed-bar-fill" style="width:'+p+'%"></div></div>'+
+      '<div class="confed-bar"><div class="confed-bar-col" style="width:'+pCol+'%"></div><div class="confed-bar-rep" style="width:'+pRep+'%"></div></div>'+
       '<div class="confed-sub">✅ '+col+' coladas · ⚠️ '+flt+' faltam · 🔄 '+rep+' repetidas</div>'+
     '</div>';
   });
   document.getElementById('sGrupos').innerHTML=gh;
 
-  const completas=TODAS.filter(s=>{const st=stats(s);return st.flt===0&&st.rep===0&&st.col===st.tot;});
+  // BUG #1 CORRIGIDO: completa = zero faltantes
+  const completas=TODAS.filter(s=>{const st=stats(s);return st.flt===0;});
   document.getElementById('sCompletas').innerHTML=completas.length
     ?completas.map(s=>'<span class="completa-item">'+
-      (s.id==='FWC'?'🏆':'<img src="'+flagUrl(s.id)+'" width="20" height="13" alt="'+s.id+'" onerror="this.style.display=\'none\'">')+
+      (s.id==='FWC'?'🏆':flagImgEl(s.id,20,13,''))+
       ' '+s.nome+'</span>').join('')
     :'<span style="color:var(--texto2);font-size:.78rem">Nenhuma completa ainda — vai lá! 💪</span>';
 }
@@ -950,7 +1122,7 @@ function abrirModal(){
   let hR='',temR=false,hF='',temF=false;
   TODAS.forEach(s=>s.j.forEach((fig,i)=>{
     const k=K(s.id,i),b=eBri(s.id,i);
-    const fEl=s.id==='FWC'?'<span style="font-size:1.1rem;flex-shrink:0">🏆</span>':'<img class="rep-flag-img" src="'+flagUrl(s.id)+'" alt="'+s.id+'" onerror="this.style.display=\'none\'">';
+    const fEl=s.id==='FWC'?'<span style="font-size:1.1rem;flex-shrink:0">🏆</span>':flagImgEl(s.id,28,19,'rep-flag-img');
     if(estado[k]==='repetida'){
       temR=true;const n=qtd[k]||1;
       hR+='<div class="rep-item'+(b?' bri':'')+'">'+fEl+
@@ -1012,7 +1184,7 @@ function abrirBrilhantes(){
     if(!eBri(s.id,i))return;
     const k=K(s.id,i),st=estado[k]||'';
     const badge=st==='colada'?'<span class="rep-badge col">✅</span>':st==='repetida'?'<span class="rep-badge bri">×'+(qtd[k]||1)+'</span>':'<span class="rep-badge flt">?</span>';
-    const fEl=s.id==='FWC'?'<span style="font-size:1.1rem;flex-shrink:0">🏆</span>':'<img class="rep-flag-img" src="'+flagUrl(s.id)+'" alt="'+s.id+'" onerror="this.style.display=\'none\'">';
+    const fEl=s.id==='FWC'?'<span style="font-size:1.1rem;flex-shrink:0">🏆</span>':flagImgEl(s.id,28,19,'rep-flag-img');
     h+='<div class="rep-item bri">'+fEl+
       '<div class="rep-info"><div class="rep-titulo">✨ '+fig.num+' – '+fig.label+'</div>'+
       '<div class="rep-detalhe">'+s.nome+' · só troca por brilhante</div></div>'+badge+'</div>';
@@ -1032,9 +1204,7 @@ document.getElementById('copiarFalt').addEventListener('click',()=>copiarLista('
   document.getElementById(id).addEventListener('click',e=>{if(e.target===document.getElementById(id))document.getElementById(id).classList.remove('aberto');});
 });
 
-// ══════════════════════════════════════════════════
 // INIT
-// ══════════════════════════════════════════════════
 carregar();
 renderTudo();
 </script>
