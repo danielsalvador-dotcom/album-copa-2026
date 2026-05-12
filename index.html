@@ -35,6 +35,10 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
 .progress-stats{display:flex;gap:8px;font-size:.7rem;font-weight:600;flex-wrap:wrap;align-items:center}
 .stat-tenho{color:var(--colada)}.stat-faltam{color:var(--amarelo)}.stat-repetidas{color:var(--repetida)}
 .stat-pct{color:#fff;font-size:.95rem;font-family:'Bebas Neue',cursive;margin-left:auto}
+.undo-wrap{display:flex;gap:4px;flex-shrink:0;margin-left:auto}
+.btn-undo,.btn-redo{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:8px;padding:4px 9px;font-size:.8rem;cursor:pointer;display:flex;align-items:center;gap:4px;transition:all .2s;flex-shrink:0;font-family:'Barlow',sans-serif;font-weight:700}
+.btn-undo:disabled,.btn-redo:disabled{opacity:.3;cursor:not-allowed}
+.btn-undo:not(:disabled):active,.btn-redo:not(:disabled):active{transform:scale(.92);background:rgba(255,255,255,.2)}
 
 /* BOTTOM TABS */
 .bottom-tabs{position:fixed;bottom:0;left:0;right:0;height:var(--tab-h);background:var(--card);border-top:1px solid var(--border);display:flex;z-index:200}
@@ -305,6 +309,10 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
     <span class="stat-faltam">⚠️ <span id="totalFaltam">0</span> faltam</span>
     <span class="stat-repetidas">🔄 <span id="totalRepetidas">0</span> rep.</span>
     <span class="stat-pct" id="pctGlobal">0%</span>
+    <div class="undo-wrap">
+      <button class="btn-undo" id="btnUndo" disabled title="Desfazer">↩</button>
+      <button class="btn-redo" id="btnRedo" disabled title="Refazer">↪</button>
+    </div>
   </div>
 </header>
 
@@ -641,6 +649,72 @@ const REPS_INI={
 // ESTADO
 // ══════════════════════════════════════════════════
 let estado={},qtd={},filtro='todos',ordem='album-asc',minimizados=new Set();
+
+// ── HISTÓRICO UNDO / REDO ────────────────────────
+// Pilha de undo: estados anteriores
+// Pilha de redo: estados que foram desfeitos
+const HIST_MAX=30;
+let pilhaUndo=[]; // [{e, q, d}] — estados antes da ação
+let pilhaRedo=[]; // [{e, q, d}] — estados desfeitos (para refazer)
+
+// Chama antes de qualquer ação que modifica dados
+function snapshot(descricao){
+  pilhaUndo.push({
+    e: JSON.stringify(estado),
+    q: JSON.stringify(qtd),
+    d: descricao
+  });
+  if(pilhaUndo.length>HIST_MAX) pilhaUndo.shift();
+  // Qualquer nova ação limpa o redo (igual ao Excel/Word)
+  pilhaRedo=[];
+  atualizarBtnsHistorico();
+}
+
+function atualizarBtnsHistorico(){
+  const btnU=document.getElementById('btnUndo');
+  const btnR=document.getElementById('btnRedo');
+  if(!btnU||!btnR)return;
+  btnU.disabled=pilhaUndo.length===0;
+  btnR.disabled=pilhaRedo.length===0;
+  btnU.title=pilhaUndo.length?'Desfazer: '+pilhaUndo[pilhaUndo.length-1].d:'Nada para desfazer';
+  btnR.title=pilhaRedo.length?'Refazer: '+pilhaRedo[pilhaRedo.length-1].d:'Nada para refazer';
+}
+
+function desfazer(){
+  if(!pilhaUndo.length)return;
+  // Salva estado atual na pilha redo antes de voltar
+  pilhaRedo.push({
+    e: JSON.stringify(estado),
+    q: JSON.stringify(qtd),
+    d: pilhaUndo[pilhaUndo.length-1].d
+  });
+  const h=pilhaUndo.pop();
+  estado=JSON.parse(h.e);
+  qtd=JSON.parse(h.q);
+  salvar();
+  renderTudo();
+  atualizarContadores();
+  atualizarBtnsHistorico();
+  if(navigator.vibrate)navigator.vibrate([20,30,20]);
+}
+
+function refazer(){
+  if(!pilhaRedo.length)return;
+  // Salva estado atual na pilha undo antes de avançar
+  pilhaUndo.push({
+    e: JSON.stringify(estado),
+    q: JSON.stringify(qtd),
+    d: pilhaRedo[pilhaRedo.length-1].d
+  });
+  const h=pilhaRedo.pop();
+  estado=JSON.parse(h.e);
+  qtd=JSON.parse(h.q);
+  salvar();
+  renderTudo();
+  atualizarContadores();
+  atualizarBtnsHistorico();
+  if(navigator.vibrate)navigator.vibrate([15,20,15]);
+}
 let todosExpandidos=false; // toggle expandir/recolher todos
 const K=(sid,i)=>sid+'-'+i;
 const SK='copa26v6';
@@ -698,6 +772,8 @@ function importarDados(){
   salvar();
 }
 function zerarTudo(){
+  pilhaUndo=[];pilhaRedo=[];
+  atualizarBtnsHistorico();
   estado={};qtd={};minimizados=new Set();
   ['_e','_q','_min'].forEach(s=>localStorage.removeItem(SK+s));
   ['copa26v5','copa26v4','copa26v3'].forEach(k=>{localStorage.removeItem(k+'_e');localStorage.removeItem(k+'_q');});
@@ -707,7 +783,7 @@ function zerarTudo(){
 // ══════════════════════════════════════════════════
 // HELPERS
 // ══════════════════════════════════════════════════
-function eBri(sid,idx){return sid==='FWC'?idx<=4:idx===0;}
+function eBri(sid,idx){return sid==='FWC'?true:idx===0;}
 
 function stats(s){
   let col=0,rep=0;
@@ -726,7 +802,7 @@ function statsGlobal(){
       else{if(b)bf++;}
     });
   });
-  return{tf,tc,tr,tenho:tc+tr,tFlt:tf-tc-tr,bc,br,bf,bTot:53};
+  return{tf,tc,tr,tenho:tc+tr,tFlt:tf-tc-tr,bc,br,bf,bTot:68};
 }
 
 // ══════════════════════════════════════════════════
@@ -939,6 +1015,7 @@ function cancelarLongo(){
 }
 
 function executarLongo(sid,idx){
+  snapshot('+rep '+sid+(idx+1));
   const k=K(sid,idx);
   if(estado[k]==='repetida'){qtd[k]=(qtd[k]||1)+1;}
   else{estado[k]='repetida';qtd[k]=1;}
@@ -950,6 +1027,7 @@ function executarToque(sid,idx){
   if(longOk){longOk=false;return;}
   const k=K(sid,idx),at=estado[k]||'';
   const{flt:fltAntes}=stats(TODAS.find(x=>x.id===sid));
+  snapshot((at==='repetida'?'-rep ':at==='colada'?'-col ':'+col ')+sid+(idx+1));
 
   if(at==='repetida'){
     const n=qtd[k]||1;
@@ -1037,9 +1115,9 @@ mainEl.addEventListener('click',e=>{
   if(a){
     e.stopPropagation();
     const sid=a.dataset.sid,s=TODAS.find(x=>x.id===sid);if(!s)return;
-    if(a.dataset.acao==='todas'){s.j.forEach((_,i)=>{const k=K(sid,i);estado[k]='colada';delete qtd[k];});}
-    else if(a.dataset.acao==='limpar-rep'){s.j.forEach((_,i)=>{const k=K(sid,i);if(estado[k]==='repetida'){estado[k]='colada';delete qtd[k];}});}
-    else{s.j.forEach((_,i)=>{const k=K(sid,i);delete estado[k];delete qtd[k];});}
+    if(a.dataset.acao==='todas'){snapshot('todas coladas '+sid);s.j.forEach((_,i)=>{const k=K(sid,i);estado[k]='colada';delete qtd[k];});}
+    else if(a.dataset.acao==='limpar-rep'){snapshot('zerar rep '+sid);s.j.forEach((_,i)=>{const k=K(sid,i);if(estado[k]==='repetida'){estado[k]='colada';delete qtd[k];}});}
+    else{snapshot('limpar '+sid);s.j.forEach((_,i)=>{const k=K(sid,i);delete estado[k];delete qtd[k];});}
     salvar();
     const grid=document.getElementById('grid-'+sid);
     if(grid){const q=document.getElementById('buscaInput').value.toLowerCase().trim();grid.innerHTML=renderGridHTML(s,q);}
@@ -1251,6 +1329,7 @@ function abrirBrilhantes(){
 
 // ZERAR TODAS AS REPETIDAS
 function zerarRepetidas(){
+  snapshot('zerar TODAS rep');
   TODAS.forEach(s=>{
     s.j.forEach((_,i)=>{
       const k=K(s.id,i);
@@ -1353,8 +1432,11 @@ function tentarRecuperar(){
   res.textContent='Dados encontrados mas estavam vazios ou corrompidos.';
 }
 // INIT
+document.getElementById('btnUndo').addEventListener('click', desfazer);
+document.getElementById('btnRedo').addEventListener('click', refazer);
 carregar();
 renderTudo();
+atualizarBtnsHistorico();
 </script>
 </body>
 </html>
