@@ -112,6 +112,7 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
 .acao-btn:active{transform:scale(.95)}
 .acao-btn.todas-coladas{background:rgba(0,200,83,.15);color:var(--colada);border:1px solid rgba(0,200,83,.3)}
 .acao-btn.limpar{background:rgba(136,153,187,.1);color:var(--texto2);border:1px solid var(--border)}
+.acao-btn.limpar-rep{background:rgba(255,109,0,.12);color:var(--repetida);border:1px solid rgba(255,109,0,.3)}
 
 /* ══════════════════════════════════════════════════
    GRID FIGURINHAS — SISTEMA DE CORES CLARO
@@ -415,6 +416,14 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
   </div>
 
   <div class="config-section">
+    <div class="config-section-title">🔄 ZERAR REPETIDAS</div>
+    <div class="zerar-box" style="background:rgba(255,109,0,.06);border-color:rgba(255,109,0,.25)">
+      <p class="zerar-aviso">Remove <strong style="color:#ff9060">todas as marcações de repetidas</strong> do álbum inteiro — as figurinhas voltam a ser coladas. Útil para reiniciar o controle de repetidas sem perder o que está colado.</p>
+      <button id="btnZerarRep" style="width:100%;background:linear-gradient(135deg,#c85000,var(--repetida));color:#fff;font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:2px;padding:13px;border-radius:10px;border:none;cursor:pointer;box-shadow:0 3px 14px rgba(255,109,0,.3)">🔄 ZERAR TODAS AS REPETIDAS</button>
+    </div>
+  </div>
+
+  <div class="config-section">
     <div class="config-section-title">🗑️ ZERAR ÁLBUM</div>
     <div class="zerar-box">
       <p class="zerar-aviso">Isso vai apagar <strong>TODO o progresso</strong> — figurinhas coladas, repetidas e contagens voltam a zero.<br><br>
@@ -461,6 +470,20 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
       <button class="modal-close" id="closeBri">✕</button>
     </div>
     <div class="lista-itens" id="listaBri"></div>
+  </div>
+</div>
+
+<!-- MODAL ZERAR REPETIDAS -->
+<div class="modal-overlay" id="modalZerarRep">
+  <div class="modal" style="border-top-color:var(--repetida)">
+    <div class="modal-header">
+      <div class="modal-header-txt"><h2 style="color:var(--repetida)">🔄 ZERAR REPETIDAS?</h2><p>Todas as repetidas viram coladas. Não pode desfazer.</p></div>
+      <button class="modal-close" id="closeZerarRep">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+      <button id="btnZerarRepSim" style="background:linear-gradient(135deg,#c85000,var(--repetida));color:#fff;font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:2px;padding:13px;border-radius:10px;border:none;cursor:pointer">✅ SIM, ZERAR REPETIDAS</button>
+      <button id="btnZerarRepNao" style="background:var(--card2);color:var(--texto2);font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:2px;padding:13px;border-radius:10px;border:1px solid var(--border);cursor:pointer">✕ CANCELAR</button>
+    </div>
   </div>
 </div>
 
@@ -847,7 +870,8 @@ function buildCard(s,abertos,q){
     '</div>'+
     '<div class="acoes-massa">'+
       '<button class="acao-btn todas-coladas" data-acao="todas" data-sid="'+s.id+'">✅ Todas coladas</button>'+
-      '<button class="acao-btn limpar" data-acao="limpar" data-sid="'+s.id+'">🗑️ Limpar</button>'+
+      '<button class="acao-btn limpar-rep" data-acao="limpar-rep" data-sid="'+s.id+'">🔄 Zerar repetidas</button>'+
+      '<button class="acao-btn limpar" data-acao="limpar" data-sid="'+s.id+'">🗑️ Limpar tudo</button>'+
     '</div>'+
     fwcLeg+
     '<div class="figurinhas-grid" id="grid-'+s.id+'">'+renderGridHTML(s,q)+'</div>'+
@@ -1014,6 +1038,7 @@ mainEl.addEventListener('click',e=>{
     e.stopPropagation();
     const sid=a.dataset.sid,s=TODAS.find(x=>x.id===sid);if(!s)return;
     if(a.dataset.acao==='todas'){s.j.forEach((_,i)=>{const k=K(sid,i);estado[k]='colada';delete qtd[k];});}
+    else if(a.dataset.acao==='limpar-rep'){s.j.forEach((_,i)=>{const k=K(sid,i);if(estado[k]==='repetida'){estado[k]='colada';delete qtd[k];}});}
     else{s.j.forEach((_,i)=>{const k=K(sid,i);delete estado[k];delete qtd[k];});}
     salvar();
     const grid=document.getElementById('grid-'+sid);
@@ -1223,6 +1248,36 @@ function abrirBrilhantes(){
   document.getElementById('listaBri').innerHTML=h;
   document.getElementById('modalBri').classList.add('aberto');
 }
+
+// ZERAR TODAS AS REPETIDAS
+function zerarRepetidas(){
+  TODAS.forEach(s=>{
+    s.j.forEach((_,i)=>{
+      const k=K(s.id,i);
+      if(estado[k]==='repetida'){
+        estado[k]='colada';
+        delete qtd[k];
+      }
+    });
+  });
+  salvar();
+  renderTudo();
+  atualizarContadores();
+}
+
+document.getElementById('btnZerarRep').addEventListener('click',()=>document.getElementById('modalZerarRep').classList.add('aberto'));
+document.getElementById('btnZerarRepSim').addEventListener('click',()=>{
+  document.getElementById('modalZerarRep').classList.remove('aberto');
+  zerarRepetidas();
+  document.querySelectorAll('.bottom-tab').forEach(t=>t.classList.remove('ativo'));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('ativo'));
+  document.querySelector('[data-page="pageAlbum"]').classList.add('ativo');
+  document.getElementById('pageAlbum').classList.add('ativo');
+  alert('Repetidas zeradas! Todas voltaram a coladas.');
+});
+document.getElementById('btnZerarRepNao').addEventListener('click',()=>document.getElementById('modalZerarRep').classList.remove('aberto'));
+document.getElementById('closeZerarRep').addEventListener('click',()=>document.getElementById('modalZerarRep').classList.remove('aberto'));
+document.getElementById('modalZerarRep').addEventListener('click',e=>{if(e.target===document.getElementById('modalZerarRep'))document.getElementById('modalZerarRep').classList.remove('aberto');});
 
 // LISTENERS GERAIS
 document.getElementById('btnModal').addEventListener('click',abrirModal);
