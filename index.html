@@ -203,11 +203,11 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
 .figurinha.pressionando{animation:pulsar .4s ease-out}
 
 /* FABS */
-.fabs{position:fixed;bottom:calc(var(--tab-h)+8px);right:12px;display:flex;flex-direction:column;gap:6px;z-index:190;align-items:flex-end}
-.fab{border-radius:50px;padding:10px 14px;font-family:'Bebas Neue',cursive;font-size:.78rem;letter-spacing:1.5px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;box-shadow:0 3px 12px rgba(0,0,0,.4);border:none}
-.fab:active{transform:scale(.95)}
-.fab.verde{background:linear-gradient(135deg,var(--verde),var(--verde-dark));color:#fff;box-shadow:0 3px 16px rgba(0,177,64,.35)}
-.fab.gold{background:linear-gradient(135deg,#c8a200,#8a6e00);color:#fff;box-shadow:0 3px 16px rgba(200,162,0,.3)}
+.fabs{display:flex;gap:7px;padding:8px 12px;background:var(--card);border-bottom:1px solid var(--border)}
+.fab{border-radius:10px;padding:10px 0;font-family:'Bebas Neue',cursive;font-size:.82rem;letter-spacing:1.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .2s;border:none;flex:1}
+.fab:active{transform:scale(.97)}
+.fab.verde{background:linear-gradient(135deg,var(--verde),var(--verde-dark));color:#fff;box-shadow:0 2px 10px rgba(0,177,64,.3)}
+.fab.gold{background:linear-gradient(135deg,#c8a200,#8a6e00);color:#fff;box-shadow:0 2px 10px rgba(200,162,0,.25)}
 
 /* MODAIS */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;display:none;align-items:flex-end}
@@ -237,6 +237,20 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
 .rep-badge.rep{background:var(--repetida)}.rep-badge.col{background:var(--colada)}.rep-badge.flt{background:var(--falta);color:var(--texto2)}.rep-badge.bri{background:var(--brilhante);color:#000}
 .btn-copiar{width:100%;background:rgba(0,200,83,.1);border:1px solid rgba(0,200,83,.3);color:var(--colada);font-family:'Bebas Neue',cursive;font-size:.9rem;letter-spacing:1.5px;padding:10px;border-radius:9px;cursor:pointer;margin-bottom:10px;transition:all .2s}
 .btn-copiar:active{transform:scale(.98)}
+.compartilhar-box{margin-bottom:14px}
+.compartilhar-desc{font-size:.76rem;color:var(--texto2);margin-bottom:10px;line-height:1.5;padding:0 2px}
+.compartilhar-desc strong{color:var(--texto)}
+.btn-compartilhar{width:100%;background:linear-gradient(135deg,var(--verde),var(--verde-dark));border:none;border-radius:12px;padding:13px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .2s;box-shadow:0 3px 14px rgba(0,177,64,.3)}
+.btn-compartilhar:active{transform:scale(.97)}
+.btn-comp-icon{font-size:1.6rem;flex-shrink:0}
+.btn-comp-txt{display:flex;flex-direction:column;align-items:flex-start;flex:1}
+.btn-comp-titulo{font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:2px;color:#fff;line-height:1.1}
+.btn-comp-sub{font-size:.68rem;color:rgba(255,255,255,.7);font-weight:600;margin-top:2px}
+.lista-resumo{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;padding:0 2px}
+.resumo-chip{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:.7rem;font-weight:700;color:var(--texto2);display:flex;align-items:center;gap:5px}
+.resumo-chip img{width:18px;height:12px;object-fit:cover;border-radius:2px}
+.resumo-chip.tem-itens{border-color:rgba(255,109,0,.3);color:var(--repetida)}
+.resumo-chip.tem-itens.falt{border-color:rgba(255,215,0,.3);color:var(--amarelo)}
 .vazio{text-align:center;padding:24px 20px;color:var(--texto2)}
 .vazio-icon{font-size:2.2rem;margin-bottom:7px}
 .vazio p{font-size:.79rem}
@@ -357,11 +371,11 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
     <div class="leg-item"><span style="font-size:.75rem">✨</span> = Brilhante (em qualquer cor)</div>
   </div>
   <div class="instrucao"><strong>Toque rápido</strong> = remove 1 &nbsp;·&nbsp; <strong>Toque longo</strong> = +1 repetida &nbsp;·&nbsp; <strong>Toque no grupo</strong> = minimizar</div>
-  <main id="mainContent"></main>
   <div class="fabs">
-    <button class="fab gold" id="btnBrilhantes">✨ BRILHANTES</button>
     <button class="fab verde" id="btnModal">📋 REPETIDAS / FALTAM</button>
+    <button class="fab gold" id="btnBrilhantes">✨ BRILHANTES</button>
   </div>
+  <main id="mainContent"></main>
 </div>
 
 <!-- ══ ESTATÍSTICAS ══ -->
@@ -452,20 +466,34 @@ header{background:linear-gradient(135deg,var(--azul) 0%,#003580 50%,var(--verde-
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-header-txt"><h2>📋 MINHAS FIGURINHAS</h2><p>Listas prontas pra mandar no WhatsApp</p></div>
+      <div class="modal-header-txt"><h2>📋 MINHAS FIGURINHAS</h2><p>Toque em COPIAR e cole direto no WhatsApp</p></div>
       <button class="modal-close" id="closeModal">✕</button>
     </div>
     <div class="modal-tabs">
-      <button class="tab-btn ativo" data-tab="tabRep">🔄 Repetidas</button>
-      <button class="tab-btn" data-tab="tabFalt">⚠️ Faltam</button>
+      <button class="tab-btn ativo" data-tab="tabFalt">⚠️ Faltam</button>
+      <button class="tab-btn" data-tab="tabRep">🔄 Repetidas</button>
     </div>
-    <div class="tab-content ativo" id="tabRep">
-      <button class="btn-copiar" id="copiarRep">📋 COPIAR PRA WHATSAPP</button>
-      <div class="lista-itens" id="listaRep"></div>
-    </div>
-    <div class="tab-content" id="tabFalt">
-      <button class="btn-copiar" id="copiarFalt">📋 COPIAR PRA WHATSAPP</button>
+    <div class="tab-content ativo" id="tabFalt">
+      <div class="compartilhar-box">
+        <div class="compartilhar-desc">Lista com tudo que você <strong>ainda não tem</strong> no álbum. Manda pro amigo que tem as figurinhas!</div>
+        <button class="btn-compartilhar" id="copiarFalt">
+          <span class="btn-comp-icon">📋</span>
+          <span class="btn-comp-txt"><span class="btn-comp-titulo">COPIAR LISTA DE FALTANTES</span><span class="btn-comp-sub">cola no WhatsApp</span></span>
+        </button>
+      </div>
+      <div class="lista-resumo" id="resumoFalt"></div>
       <div class="lista-itens" id="listaFalt"></div>
+    </div>
+    <div class="tab-content" id="tabRep">
+      <div class="compartilhar-box">
+        <div class="compartilhar-desc">Lista com tudo que você tem <strong>repetido</strong>. Manda pra quem precisa dessas figurinhas!</div>
+        <button class="btn-compartilhar" id="copiarRep">
+          <span class="btn-comp-icon">📋</span>
+          <span class="btn-comp-txt"><span class="btn-comp-titulo">COPIAR LISTA DE REPETIDAS</span><span class="btn-comp-sub">cola no WhatsApp</span></span>
+        </button>
+      </div>
+      <div class="lista-resumo" id="resumoRep"></div>
+      <div class="lista-itens" id="listaRep"></div>
     </div>
   </div>
 </div>
@@ -1253,51 +1281,110 @@ function renderStats(g){
 // MODAL REPETIDAS/FALTAM
 // ══════════════════════════════════════════════════
 function abrirModal(){
-  let hR='',temR=false,hF='',temF=false;
-  TODAS.forEach(s=>s.j.forEach((fig,i)=>{
-    const k=K(s.id,i),b=eBri(s.id,i);
-    const fEl=s.id==='FWC'?'<span style="font-size:1.1rem;flex-shrink:0">🏆</span>':flagImgEl(s.id,28,19,'rep-flag-img');
-    if(estado[k]==='repetida'){
-      temR=true;const n=qtd[k]||1;
-      hR+='<div class="rep-item'+(b?' bri':'')+'">'+fEl+
-        '<div class="rep-info"><div class="rep-titulo">'+(b?'✨ ':'')+fig.num+'</div>'+
-        '<div class="rep-detalhe">'+s.nome+(b?' · só brilhante':'')+'</div></div>'+
-        '<span class="rep-badge '+(b?'bri':'rep')+'">×'+n+'</span></div>';
-    }
-    if(!estado[k]){
-      temF=true;
-      hF+='<div class="rep-item'+(b?' bri':'')+'">'+fEl+
-        '<div class="rep-info"><div class="rep-titulo">'+(b?'✨ ':'')+fig.num+'</div>'+
-        '<div class="rep-detalhe">'+s.nome+(b?' · brilhante':'')+'</div></div></div>';
-    }
-  }));
-  document.getElementById('listaRep').innerHTML=temR?hR:'<div class="vazio"><div class="vazio-icon">🎉</div><p>Nenhuma repetida!</p></div>';
+  // Faltantes
+  let hF='',temF=false,resumoF='',totalFalt=0;
+  TODAS.forEach(s=>{
+    const figs=s.j.filter((fig,i)=>!estado[K(s.id,i)]);
+    if(!figs.length)return;
+    temF=true;
+    totalFalt+=figs.length;
+    // chip de resumo
+    const fEl=s.id==='FWC'?'🏆':flagImgEl(s.id,18,12,'');
+    resumoF+='<div class="resumo-chip falt tem-itens">'+fEl+' '+s.id+' <strong>'+figs.length+'</strong></div>';
+    // itens da lista agrupados por seleção
+    hF+='<div class="rep-item" style="flex-direction:column;align-items:flex-start;gap:6px;padding:10px 12px">';
+    hF+='<div style="display:flex;align-items:center;gap:8px;width:100%">';
+    hF+=(s.id==='FWC'?'<span style="font-size:1.1rem">🏆</span>':flagImgEl(s.id,28,19,'rep-flag-img'));
+    hF+='<div style="flex:1"><div style="font-weight:700;font-size:.82rem">'+s.nome+'</div>';
+    hF+='<div style="font-size:.67rem;color:var(--texto2)">'+figs.length+' figurinha'+(figs.length>1?'s':'')+' faltando</div></div></div>';
+    hF+='<div style="display:flex;flex-wrap:wrap;gap:4px;padding-left:2px">';
+    figs.forEach((fig,idx)=>{
+      const i=s.j.indexOf(fig);
+      const b=eBri(s.id,i);
+      hF+='<span style="background:var(--falta);border:1px solid #2a3d5a;border-radius:6px;padding:3px 7px;font-size:.72rem;font-weight:700;color:var(--texto2)">'+(b?'✨ ':'')+fig.num+'</span>';
+    });
+    hF+='</div></div>';
+  });
   document.getElementById('listaFalt').innerHTML=temF?hF:'<div class="vazio"><div class="vazio-icon">🏆</div><p>Álbum completo!</p></div>';
+  document.getElementById('resumoFalt').innerHTML=temF?resumoF:'';
+
+  // Repetidas
+  let hR='',temR=false,resumoR='',totalRep=0;
+  TODAS.forEach(s=>{
+    const figs=s.j.filter((fig,i)=>estado[K(s.id,i)]==='repetida').map((fig,_,__)=>({fig,i:s.j.indexOf(fig)}));
+    if(!figs.length)return;
+    temR=true;
+    totalRep+=figs.length;
+    const fEl=s.id==='FWC'?'🏆':flagImgEl(s.id,18,12,'');
+    resumoR+='<div class="resumo-chip tem-itens">'+fEl+' '+s.id+' <strong>'+figs.length+'</strong></div>';
+    hR+='<div class="rep-item" style="flex-direction:column;align-items:flex-start;gap:6px;padding:10px 12px">';
+    hR+='<div style="display:flex;align-items:center;gap:8px;width:100%">';
+    hR+=(s.id==='FWC'?'<span style="font-size:1.1rem">🏆</span>':flagImgEl(s.id,28,19,'rep-flag-img'));
+    hR+='<div style="flex:1"><div style="font-weight:700;font-size:.82rem">'+s.nome+'</div>';
+    hR+='<div style="font-size:.67rem;color:var(--texto2)">'+figs.length+' repetida'+(figs.length>1?'s':'')+' disponíveis</div></div></div>';
+    hR+='<div style="display:flex;flex-wrap:wrap;gap:4px;padding-left:2px">';
+    figs.forEach(({fig,i})=>{
+      const b=eBri(s.id,i),n=qtd[K(s.id,i)]||1;
+      hR+='<span style="background:rgba(255,109,0,.12);border:1px solid var(--repetida);border-radius:6px;padding:3px 7px;font-size:.72rem;font-weight:700;color:var(--repetida)">'+(b?'✨ ':'')+fig.num+(n>1?' ×'+n:'')+'</span>';
+    });
+    hR+='</div></div>';
+  });
+  document.getElementById('listaRep').innerHTML=temR?hR:'<div class="vazio"><div class="vazio-icon">🎉</div><p>Nenhuma repetida!</p></div>';
+  document.getElementById('resumoRep').innerHTML=temR?resumoR:'';
+
   document.getElementById('modalOverlay').classList.add('aberto');
 }
 
 function copiarLista(tipo){
-  const linhas=['🏆 Álbum Copa do Mundo 2026\n'];
-  if(tipo==='rep'){
-    linhas.push('🔄 MINHAS REPETIDAS:\n');
-    TODAS.forEach(s=>{
-      const reps=s.j.map((fig,i)=>({fig,i})).filter(({i})=>estado[K(s.id,i)]==='repetida');
-      if(!reps.length)return;
-      linhas.push(s.nome+' ('+s.id+'):');
-      reps.forEach(({fig,i})=>{const n=qtd[K(s.id,i)]||1,b=eBri(s.id,i);linhas.push('  '+fig.num+(b?'✨':'')+(n>1?' ×'+n:''));});
-    });
-  }else{
-    linhas.push('⚠️ FALTAM NO MEU ÁLBUM:\n');
+  const linhas=[];
+  if(tipo==='falt'){
+    // Contar total
+    let total=0;
+    TODAS.forEach(s=>s.j.forEach((_,i)=>{if(!estado[K(s.id,i)])total++;}));
+    linhas.push('🏆 ÁLBUM COPA DO MUNDO 2026');
+    linhas.push('⚠️ FIGURINHAS QUE ME FALTAM ('+total+' no total)');
+    linhas.push('');
     TODAS.forEach(s=>{
       const flt=s.j.map((fig,i)=>({fig,i})).filter(({i})=>!estado[K(s.id,i)]);
       if(!flt.length)return;
-      linhas.push(s.nome+' ('+s.id+'):');
-      flt.forEach(({fig,i})=>{const b=eBri(s.id,i);linhas.push('  '+fig.num+(b?'✨':''));});
+      const nums=flt.map(({fig,i})=>fig.num+(eBri(s.id,i)?'✨':'')).join(' · ');
+      linhas.push(FLAG_EMOJI[s.id]||'🏆'+' *'+s.nome+'* ('+flt.length+'):');
+      linhas.push(nums);
+      linhas.push('');
     });
+    linhas.push('_Gerado pelo Álbum Copa 2026 🏆_');
+  } else {
+    let total=0;
+    TODAS.forEach(s=>s.j.forEach((_,i)=>{if(estado[K(s.id,i)]==='repetida')total++;}));
+    linhas.push('🏆 ÁLBUM COPA DO MUNDO 2026');
+    linhas.push('🔄 MINHAS FIGURINHAS REPETIDAS ('+total+' no total)');
+    linhas.push('');
+    TODAS.forEach(s=>{
+      const reps=s.j.map((fig,i)=>({fig,i})).filter(({i})=>estado[K(s.id,i)]==='repetida');
+      if(!reps.length)return;
+      const nums=reps.map(({fig,i})=>{const n=qtd[K(s.id,i)]||1,b=eBri(s.id,i);return fig.num+(b?'✨':'')+(n>1?' ×'+n:'');}).join(' · ');
+      linhas.push(FLAG_EMOJI[s.id]||'🏆'+' *'+s.nome+'* ('+reps.length+'):');
+      linhas.push(nums);
+      linhas.push('');
+    });
+    linhas.push('_Gerado pelo Álbum Copa 2026 🏆_');
   }
   const txt=linhas.join('\n');
-  if(navigator.clipboard){navigator.clipboard.writeText(txt).then(()=>alert('✅ Copiado! Cola no WhatsApp.'));}
-  else{const el=document.createElement('textarea');el.value=txt;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('✅ Copiado!');}
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(txt).then(()=>{
+      // Feedback visual no botão
+      const btn=document.getElementById(tipo==='falt'?'copiarFalt':'copiarRep');
+      const tituloEl=btn?btn.querySelector('.btn-comp-titulo'):null;
+      if(tituloEl){
+        const orig=tituloEl.textContent;
+        tituloEl.textContent='✅ COPIADO!';
+        setTimeout(()=>{tituloEl.textContent=orig;},2000);
+      }
+    });
+  } else {
+    const el=document.createElement('textarea');el.value=txt;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);
+    alert('Copiado! Cola no WhatsApp.');
+  }
 }
 
 document.querySelectorAll('.tab-btn').forEach(btn=>{
